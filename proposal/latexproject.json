@@ -1,0 +1,8 @@
+{
+  "latex": "pdflatex",
+  "bin": "bin",
+  "entry": "zc2616.tex",
+  "bib": "none",
+  "glossary": false,
+  "includes": []
+}
