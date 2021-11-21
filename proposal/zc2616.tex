@@ -1,8 +1,65 @@
 \documentclass{article}
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{hyperref}
 
 \title{COMS 4995 Functional Parallel Programming - Conway Game of Life}
 \author{Zehua Chen (zc2616)}
 
+\setlength{\parindent}{0pt}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  numbers=left,
+}
+
 \begin{document}
   \maketitle
+  \tableofcontents
+
+  \section{Overview}
+
+    The project is broken down into two parts
+
+    \begin{itemize}
+      \item An \textbf{engine written in Haskell} that takes a input file and simulate
+      conway game of life for a number of iterations and save the iterations
+      to an output file
+      \item A \textbf{simple web interface} helps create the input file and takes the
+      output file and replay it
+    \end{itemize}
+
+  \section{Communication}
+
+    Communication between the web interface and the Haskell engine will be done
+    using JSON
+
+    Input and output files will be of the same format. The only difference
+    is that the input file would just contain one iteration
+
+    \lstinputlisting{../frontend/schema.ts}
+
+  \section{Engine}
+
+    \subsection{Dependencies}
+
+      \begin{itemize}
+        \item \href{https://hackage.haskell.org/package/aeson-2.0.2.0/docs/Data-Aeson.html}{aeson}:
+        used for JSON parsing
+        \item \href{https://hackage.haskell.org/package/argparser-0.3.4/docs/System-Console-ArgParser.html}{argparse}:
+        command line argument parser
+        \item \href{https://hackage.haskell.org/package/HUnit-1.6.2.0/docs/Test-HUnit.html}{HUnit}:
+        used for unit testing
+      \end{itemize}
+
+  \section{Web Interface}
+
+    The web interface will be hosted using Github Pages
+
+    \subsection{Dependencies}
+
+      \begin{itemize}
+        \item \href{https://www.gatsbyjs.com}{Gatsby}: static site generation
+        for React.js
+      \end{itemize}
 \end{document}
