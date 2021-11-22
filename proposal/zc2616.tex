@@ -15,51 +15,36 @@
 
 \begin{document}
   \maketitle
-  \tableofcontents
 
   \section{Overview}
 
-    The project is broken down into two parts
+    The goal of the project is to build a conway game of life simulator for
+    an infinite grid for a specified number of iterations. The simulator would
+    take a list of living cells as the input and save iterations, which are
+    also made up of lists of living cells, to disk.
+
+  \section{IO}
+
+    \lstinputlisting{../engine/Schema.hs}
 
     \begin{itemize}
-      \item An \textbf{engine written in Haskell} that takes a input file and simulate
-      conway game of life for a number of iterations and save the iterations
-      to an output file
-      \item A \textbf{simple web interface} helps create the input file and takes the
-      output file and replay it
+      \item The input of a story will just be a story of one page
+      \item Serialized and deserialized as JSON using
+      \href{https://hackage.haskell.org/package/aeson}{aeson}
+      \item The number of iterations wille be passed in from the command line
     \end{itemize}
 
-  \section{Communication}
+  \section{References}
 
-    Communication between the web interface and the Haskell engine will be done
-    using JSON
+    Below are some websites that I think that will come in handy for implementing
+    the project.
 
-    Input and output files will be of the same format. The only difference
-    is that the input file would just contain one iteration
+    \begin{itemize}
+      \item \href{https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life}{Wikipedia}:
+      rules of Conway game of life
+      \item \href{https://www.madelyneriksen.com/python-game-of-life}{Conway's Game of Life With Pure Python}
+      contains a pure \emph{python version of conway game of life using sparse rather}
+      than dense input.
+    \end{itemize}
 
-    \lstinputlisting{../frontend/schema.ts}
-
-  \section{Engine}
-
-    \subsection{Dependencies}
-
-      \begin{itemize}
-        \item \href{https://hackage.haskell.org/package/aeson-2.0.2.0/docs/Data-Aeson.html}{aeson}:
-        used for JSON parsing
-        \item \href{https://hackage.haskell.org/package/argparser-0.3.4/docs/System-Console-ArgParser.html}{argparse}:
-        command line argument parser
-        \item \href{https://hackage.haskell.org/package/HUnit-1.6.2.0/docs/Test-HUnit.html}{HUnit}:
-        used for unit testing
-      \end{itemize}
-
-  \section{Web Interface}
-
-    The web interface will be hosted using Github Pages
-
-    \subsection{Dependencies}
-
-      \begin{itemize}
-        \item \href{https://www.gatsbyjs.com}{Gatsby}: static site generation
-        for React.js
-      \end{itemize}
 \end{document}

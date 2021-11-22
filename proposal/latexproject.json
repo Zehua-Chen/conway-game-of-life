@@ -4,5 +4,5 @@
   "entry": "zc2616.tex",
   "bib": "none",
   "glossary": false,
-  "includes": ["../frontend/schema.ts"]
+  "includes": ["../engine/Schema.hs"]
 }
