@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'conway_player.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,7 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   String _title() {
     switch (_selectedIndex) {
@@ -46,6 +47,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return 'Replay Conway Game of Life';
       default:
         throw Error();
+    }
+  }
+
+  Widget _body() {
+    switch (_selectedIndex) {
+      case 0:
+        return const Placeholder();
+      case 1:
+        return ConwayPlayer();
+      default:
+        return const Placeholder();
     }
   }
 
@@ -73,7 +85,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     icon: Icon(Icons.replay), label: Text('Replay')),
               ],
             ),
-            Center(child: Text('Index: $_selectedIndex'))
+            Expanded(child: Center(child: _body()))
           ],
         ));
   }
