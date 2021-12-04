@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'conway_player.dart';
+import 'player/player.dart';
 
 void main() {
   runApp(const MyApp());

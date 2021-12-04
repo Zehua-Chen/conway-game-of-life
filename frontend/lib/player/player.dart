@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:ui';
-
-class _Painter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Rect rect = const Offset(0, 0) & size;
-    canvas.drawRect(rect, Paint()..color = Colors.grey);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
+import 'row.dart';
 
 class ConwayPlayer extends StatefulWidget {
   const ConwayPlayer({Key? key}) : super(key: key);
@@ -34,7 +21,13 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Expanded(child: CustomPaint(painter: _Painter(), child: Container())),
+      Expanded(
+          child: Column(
+              children: [
+            for (int i = 0; i < 10; i++) const ConwayRow(count: 10),
+          ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center)),
       Padding(
           padding: const EdgeInsets.all(16.0),
           child: IconButton(
