@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'player/player.dart';
+import 'schema/schema.dart' as schema;
+import 'dart:convert';
 
 void main() {
+  final story = schema.Story([
+    schema.Page([schema.LivingCell(1, 2), schema.LivingCell(1, 10)])
+  ]);
+
+  print(jsonEncode(story.toJson()));
+
   runApp(const MyApp());
 }
 
