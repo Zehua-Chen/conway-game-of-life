@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:frontend/schema/schema.dart';
+import 'package:conway/schema/schema.dart';
 import 'dart:convert';
 
 void main() {
