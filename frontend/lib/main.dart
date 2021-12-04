@@ -39,6 +39,17 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 1;
 
+  static Route<Object?> _dialogBuilder(
+      BuildContext context, Object? arguments) {
+    return DialogRoute<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return const AboutDialog(
+              applicationName: 'Conway Game of Life',
+              applicationVersion: '1.0.0');
+        });
+  }
+
   String _title() {
     switch (_selectedIndex) {
       case 0:
@@ -67,7 +78,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         appBar: AppBar(
             // Here we take the value from the MyHomePage object that was created by
             // the App.build method, and use it to set our appbar title.
-            title: Text(_title())),
+            title: Text(_title()),
+            actions: <Widget>[
+              IconButton(
+                  icon: const Icon(Icons.info),
+                  onPressed: () {
+                    Navigator.of(context).restorablePush(_dialogBuilder);
+                  })
+            ]),
         body: Row(
           children: [
             NavigationRail(

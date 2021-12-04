@@ -16,6 +16,8 @@ class _Painter extends CustomPainter {
 }
 
 class ConwayPlayer extends StatefulWidget {
+  const ConwayPlayer({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _ConwayPlayerState();
 }
