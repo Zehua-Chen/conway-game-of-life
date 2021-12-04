@@ -5,8 +5,8 @@ import 'dart:ui';
 class _Painter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Rect rect = const Offset(1.0, 2.0) & size;
-    canvas.drawRect(rect, Paint()..color = Colors.black);
+    Rect rect = const Offset(0, 0) & size;
+    canvas.drawRect(rect, Paint()..color = Colors.grey);
   }
 
   @override
@@ -34,7 +34,7 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      const Expanded(child: Placeholder()),
+      Expanded(child: CustomPaint(painter: _Painter(), child: Container())),
       Padding(
           padding: const EdgeInsets.all(16.0),
           child: IconButton(
