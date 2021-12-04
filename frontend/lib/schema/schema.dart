@@ -28,6 +28,16 @@ class Page {
   Map<String, dynamic> toJson() {
     return {'livingCells': cells.map((cell) => cell.toJson()).toList()};
   }
+
+  bool isAlive(int x, int y) {
+    for (final cell in cells) {
+      if (cell.x == x && cell.y == y) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
 
 class Story {

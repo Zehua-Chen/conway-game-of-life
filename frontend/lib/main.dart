@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'player/player.dart';
 import 'schema/schema.dart' as schema;
-import 'dart:convert';
 
 void main() {
-  final story = schema.Story([
-    schema.Page([schema.LivingCell(1, 2), schema.LivingCell(1, 10)])
-  ]);
-
-  print(jsonEncode(story.toJson()));
-
   runApp(const MyApp());
 }
 
@@ -35,6 +28,13 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 1;
+  int _pageIndex = 0;
+
+  final schema.Story _story = schema.Story([
+    schema.Page([schema.LivingCell(0, 0)]),
+    schema.Page([schema.LivingCell(-5, -5), schema.LivingCell(5, 5)]),
+    schema.Page([schema.LivingCell(-10, -10), schema.LivingCell(10, 10)])
+  ]);
 
   static Route<Object?> _dialogBuilder(
       BuildContext context, Object? arguments) {
@@ -45,6 +45,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               applicationName: 'Conway Game of Life',
               applicationVersion: '1.0.0');
         });
+  }
+
+  void _nextPage() {
+    setState(() {
+      _pageIndex += 1;
+      _pageIndex = _pageIndex % _story.pages.length;
+    });
   }
 
   String _title() {
@@ -63,7 +70,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       case 0:
         return const Placeholder();
       case 1:
-        return ConwayPlayer();
+        return ConwayPlayer(
+            story: _story, page: _pageIndex, onNextPage: _nextPage);
       default:
         return const Placeholder();
     }
