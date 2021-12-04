@@ -65,7 +65,7 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
       Expanded(
           child: Column(
               children: [
-            for (double y = bounding.minY; y <= bounding.maxY; y++)
+            for (double y = bounding.maxY; y >= bounding.minY; y -= 1.0)
               ConwayRow(
                   minX: bounding.minX, maxX: bounding.maxX, y: y, page: page),
           ],
