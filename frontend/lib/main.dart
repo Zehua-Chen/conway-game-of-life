@@ -29,6 +29,7 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 1;
   int _pageIndex = 0;
+  bool _playing = true;
 
   final schema.Story _story = schema.Story([
     schema.Page([schema.LivingCell(0, 0)]),
@@ -54,6 +55,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     });
   }
 
+  void _playingToggle() {
+    setState(() {
+      _playing = !_playing;
+    });
+  }
+
   String _title() {
     switch (_selectedIndex) {
       case 0:
@@ -71,7 +78,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return const Placeholder();
       case 1:
         return ConwayPlayer(
-            story: _story, page: _pageIndex, onNextPage: _nextPage);
+            story: _story,
+            page: _pageIndex,
+            playing: _playing,
+            onNextPage: _nextPage,
+            onPlayingToggle: _playingToggle);
       default:
         return const Placeholder();
     }

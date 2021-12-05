@@ -46,20 +46,22 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
   }
 
   void _toggle() {
-    setState(() {
-      if (_timer != null) {
-        _timer?.cancel();
-        _timer = null;
-      } else {
-        _timer = Timer(widget.durationPerPage, _tick);
-      }
-    });
+    widget.onPlayingToggle?.call();
   }
 
   @override
   Widget build(BuildContext context) {
     final page = widget.story.pages[widget.page];
     Rect bounding = page.boundingBox;
+
+    if (widget.playing) {
+      _timer ??= Timer(widget.durationPerPage, _tick);
+    } else {
+      if (_timer != null) {
+        _timer?.cancel();
+        _timer = null;
+      }
+    }
 
     return Column(children: [
       Expanded(
