@@ -2,14 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:conway/schema/schema.dart' as schema;
-
-import 'row.dart';
-import 'geometry.dart';
+import 'package:conway/widgets/conway_grid/conway_grid.dart';
 
 class ConwayPlayer extends StatefulWidget {
-  final schema.Story story;
-  final int page;
+  final List<ConwayFrame> frames;
+  final int frame;
   final bool playing;
 
   final Duration durationPerPage;
@@ -18,8 +15,8 @@ class ConwayPlayer extends StatefulWidget {
 
   const ConwayPlayer(
       {Key? key,
-      required this.story,
-      this.page = 0,
+      required this.frames,
+      this.frame = 0,
       this.playing = true,
       this.durationPerPage = const Duration(seconds: 1),
       this.onNextPage,
@@ -51,9 +48,6 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    final page = widget.story.pages[widget.page];
-    Rect bounding = page.boundingBox;
-
     if (widget.playing) {
       _timer ??= Timer(widget.durationPerPage, _tick);
     } else {
@@ -64,19 +58,11 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
     }
 
     return Column(children: [
-      Expanded(
-          child: Column(
-              children: [
-            for (double y = bounding.maxY; y >= bounding.minY; y -= 1.0)
-              ConwayRow(
-                  minX: bounding.minX, maxX: bounding.maxX, y: y, page: page),
-          ],
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center)),
+      Expanded(child: ConwayGrid(frame: widget.frames[widget.frame])),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: LinearProgressIndicator(
-              value: (widget.page + 1) / widget.story.length)),
+              value: (widget.frame + 1) / widget.frames.length)),
       Padding(
           padding: const EdgeInsets.all(16.0),
           child: IconButton(

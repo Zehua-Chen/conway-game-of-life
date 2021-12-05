@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:conway/widgets/player/player.dart';
-import 'package:conway/schema/schema.dart' as schema;
+import 'package:conway/widgets/conway_grid/conway_grid.dart';
+import 'package:conway/widgets/conway_player/conway_player.dart';
 
 class Replay extends StatefulWidget {
   const Replay({Key? key}) : super(key: key);
@@ -10,19 +10,25 @@ class Replay extends StatefulWidget {
 }
 
 class _ReplayState extends State<Replay> {
-  int _pageIndex = 0;
+  int _frame = 0;
   bool _playing = true;
 
-  final schema.Story _story = schema.Story([
-    schema.Page([schema.LivingCell(0, 0)]),
-    schema.Page([schema.LivingCell(-5, -5), schema.LivingCell(5, 5)]),
-    schema.Page([schema.LivingCell(-10, -10), schema.LivingCell(10, 10)])
-  ]);
+  final List<ConwayFrame> _frames = [
+    ConwayFrame.fromNestedList([
+      [true, false, true]
+    ]),
+    ConwayFrame.fromNestedList([
+      [false, false, true]
+    ]),
+    ConwayFrame.fromNestedList([
+      [false, false, false]
+    ]),
+  ];
 
   void _nextPage() {
     setState(() {
-      _pageIndex += 1;
-      _pageIndex = _pageIndex % _story.pages.length;
+      _frame += 1;
+      _frame = _frame % _frames.length;
     });
   }
 
@@ -35,8 +41,8 @@ class _ReplayState extends State<Replay> {
   @override
   Widget build(BuildContext context) {
     return ConwayPlayer(
-        story: _story,
-        page: _pageIndex,
+        frames: _frames,
+        frame: _frame,
         playing: _playing,
         onNextPage: _nextPage,
         onPlayingToggle: _playingToggle);
