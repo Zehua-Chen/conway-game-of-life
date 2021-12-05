@@ -11,8 +11,8 @@ class Configuration extends StatefulWidget {
 }
 
 class _ConfigurationState extends State<Configuration> {
-  int _width = 10;
-  int _height = 10;
+  int _width = 11;
+  int _height = 11;
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
@@ -28,11 +28,11 @@ class _ConfigurationState extends State<Configuration> {
             key: _form,
             child: Column(children: <Widget>[
               NumberFormField(
-                  value: 10,
+                  value: _width,
                   label: const Text('Width'),
                   onValueChanged: (value) => setState(() => _width = value)),
               NumberFormField(
-                  value: 10,
+                  value: _height,
                   label: const Text('Height'),
                   onValueChanged: (value) => setState(() => _height = value)),
               Padding(

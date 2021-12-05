@@ -19,8 +19,8 @@ class _Painter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant _Painter oldDelegate) {
+    return oldDelegate.alive != alive;
   }
 }
 
@@ -35,11 +35,13 @@ class ConwayCell extends StatelessWidget {
     final aliveColor = theme.primaryColor;
     const deadColor = Colors.grey;
 
-    return Padding(
-        padding: const EdgeInsets.all(2),
-        child: CustomPaint(
-            painter: _Painter(
-                alive: alive, aliveColor: aliveColor, deadColor: deadColor),
-            size: const Size(10, 10)));
+    return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: CustomPaint(
+                painter: _Painter(
+                    alive: alive, aliveColor: aliveColor, deadColor: deadColor),
+                size: const Size(17, 17))));
   }
 }

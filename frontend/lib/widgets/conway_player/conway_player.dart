@@ -92,13 +92,13 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
           padding: const EdgeInsets.all(16),
           child: Row(children: <Widget>[
             Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text('$_frame')),
             Expanded(
                 child: LinearProgressIndicator(
                     value: _frame / (widget.frames.length - 1))),
             Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text('${widget.frames.length - 1}'))
           ])),
       Padding(
