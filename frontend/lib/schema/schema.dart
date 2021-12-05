@@ -25,6 +25,10 @@ class Page {
     }
   }
 
+  int get length {
+    return cells.length;
+  }
+
   Map<String, dynamic> toJson() {
     return {'livingCells': cells.map((cell) => cell.toJson()).toList()};
   }
@@ -44,6 +48,10 @@ class Story {
   List<Page> pages = [];
 
   Story(this.pages);
+
+  int get length {
+    return pages.length;
+  }
 
   Story.fromJson(Map<String, dynamic> json) {
     for (final page in json['pages']) {
