@@ -1,8 +1,56 @@
 \documentclass{article}
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{hyperref}
 
 \title{COMS 4995 Functional Parallel Programming - Conway Game of Life}
 \author{Zehua Chen (zc2616)}
 
+\setlength{\parindent}{0pt}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  numbers=left,
+}
+
 \begin{document}
   \maketitle
+
+  \section{Overview}
+
+    The goal of the project is to build a conway game of life simulator for
+    an infinite grid for a specified number of iterations. The simulator would
+    take a list of living cells as the input and save iterations, which are
+    also made up of lists of living cells, to disk.
+
+  \section{IO}
+
+    \lstinputlisting{../engine/Schema.hs}
+
+    \begin{itemize}
+      \item The input of a story will just be a story of one page
+      \item The data will be serialized and deserialized as JSON using
+      \href{https://hackage.haskell.org/package/aeson}{aeson}
+      \item The number of iterations wille be passed in from the command line
+    \end{itemize}
+
+  \subsection{Implementation}
+
+    The conway grid will be decomposed into a subgrids for parallelization, with
+    additional step to solve interactions between subgrids and resize the overall grid
+    if needed
+
+  \section{References}
+
+    Below are some websites that I think that will come in handy for implementing
+    the project.
+
+    \begin{itemize}
+      \item \href{https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life}{Wikipedia}:
+      rules of Conway game of life
+      \item \href{https://www.madelyneriksen.com/python-game-of-life}{Conway's Game of Life With Pure Python}
+      contains a pure \emph{python version of conway game of life using sparse rather}
+      than dense input.
+    \end{itemize}
+
 \end{document}

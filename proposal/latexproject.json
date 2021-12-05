@@ -4,5 +4,5 @@
   "entry": "zc2616.tex",
   "bib": "none",
   "glossary": false,
-  "includes": []
+  "includes": ["../engine/Schema.hs"]
 }
