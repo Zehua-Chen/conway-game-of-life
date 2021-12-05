@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conway/player/player.dart';
+import 'package:conway/widgets/player/player.dart';
 import 'package:conway/schema/schema.dart' as schema;
 
 class Replay extends StatefulWidget {

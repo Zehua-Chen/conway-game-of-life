@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:conway/schema/schema.dart';
-import 'package:conway/player/geometry.dart';
+import 'package:conway/widgets/player/geometry.dart';
 
 void main() {
   test('bounding box', () {

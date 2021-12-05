@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'replay.dart';
+import 'pages/replay.dart';
 
 void main() {
   runApp(const MyApp());
