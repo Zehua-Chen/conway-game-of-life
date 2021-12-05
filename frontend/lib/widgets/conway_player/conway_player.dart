@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+export 'package:conway/widgets/conway_grid/conway_grid.dart';
 import 'package:conway/widgets/conway_grid/conway_grid.dart';
 
 class ConwayPlayer extends StatefulWidget {
@@ -10,8 +11,8 @@ class ConwayPlayer extends StatefulWidget {
   final bool playing;
 
   final Duration durationPerPage;
-  final Function? onNextPage;
-  final Function? onPlayingToggle;
+  final VoidCallback? onNextPage;
+  final VoidCallback? onPlayingToggle;
 
   const ConwayPlayer(
       {Key? key,

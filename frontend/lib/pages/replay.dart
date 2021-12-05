@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:conway/widgets/conway_grid/conway_grid.dart';
 import 'package:conway/widgets/conway_player/conway_player.dart';
 
 class Replay extends StatefulWidget {

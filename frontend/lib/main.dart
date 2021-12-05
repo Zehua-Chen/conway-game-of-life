@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/replay.dart';
+import 'pages/edit/edit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,7 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   static Route<Object?> _dialogBuilder(
       BuildContext context, Object? arguments) {
@@ -53,7 +54,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget _body() {
     switch (_selectedIndex) {
       case 0:
-        return const Placeholder();
+        return const Edit();
       case 1:
         return const Replay();
       default:

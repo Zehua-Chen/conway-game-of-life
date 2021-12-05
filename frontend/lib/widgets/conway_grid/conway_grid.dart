@@ -58,9 +58,9 @@ class ConwayFrame {
 }
 
 class ConwayGrid extends StatelessWidget {
-  ConwayFrame frame;
+  final ConwayFrame frame;
 
-  ConwayGrid({Key? key, required this.frame}) : super(key: key);
+  const ConwayGrid({Key? key, required this.frame}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
