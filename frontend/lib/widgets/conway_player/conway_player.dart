@@ -7,20 +7,18 @@ import 'package:conway/widgets/conway_grid/conway_grid.dart';
 
 class ConwayPlayer extends StatefulWidget {
   final List<ConwayFrame> frames;
-  final int frame;
   final bool playing;
+  final int initFrame;
 
-  final Duration durationPerPage;
-  final VoidCallback? onNextPage;
+  final Duration durationPerFrame;
   final VoidCallback? onPlayingToggle;
 
   const ConwayPlayer(
       {Key? key,
       required this.frames,
-      this.frame = 0,
       this.playing = true,
-      this.durationPerPage = const Duration(seconds: 1),
-      this.onNextPage,
+      this.initFrame = 0,
+      this.durationPerFrame = const Duration(seconds: 1),
       this.onPlayingToggle})
       : super(key: key);
 
@@ -30,6 +28,18 @@ class ConwayPlayer extends StatefulWidget {
 
 class _ConwayPlayerState extends State<ConwayPlayer> {
   Timer? _timer;
+  int _frame = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _frame = widget.initFrame;
+
+    if (widget.playing) {
+      _timer = Timer(widget.durationPerFrame, _tick);
+    }
+  }
 
   @override
   void deactivate() {
@@ -38,9 +48,36 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
     _timer?.cancel();
   }
 
+  @override
+  void didUpdateWidget(covariant ConwayPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.playing) {
+      if (!oldWidget.playing) {
+        setState(() {
+          _nextFrame();
+        });
+      }
+
+      _timer?.cancel();
+      _timer = Timer(widget.durationPerFrame, _tick);
+    } else {
+      _timer?.cancel();
+      _timer = null;
+    }
+  }
+
   void _tick() {
-    widget.onNextPage?.call();
-    _timer = Timer(widget.durationPerPage, _tick);
+    setState(() {
+      _nextFrame();
+    });
+
+    _timer = Timer(widget.durationPerFrame, _tick);
+  }
+
+  void _nextFrame() {
+    _frame += 1;
+    _frame %= widget.frames.length;
   }
 
   void _toggle() {
@@ -49,21 +86,21 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.playing) {
-      _timer ??= Timer(widget.durationPerPage, _tick);
-    } else {
-      if (_timer != null) {
-        _timer?.cancel();
-        _timer = null;
-      }
-    }
-
     return Column(children: [
-      Expanded(child: ConwayGrid(frame: widget.frames[widget.frame])),
+      Expanded(child: ConwayGrid(frame: widget.frames[_frame])),
       Padding(
           padding: const EdgeInsets.all(16),
-          child: LinearProgressIndicator(
-              value: (widget.frame + 1) / widget.frames.length)),
+          child: Row(children: <Widget>[
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Text('$_frame')),
+            Expanded(
+                child: LinearProgressIndicator(
+                    value: _frame / (widget.frames.length - 1))),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Text('${widget.frames.length - 1}'))
+          ])),
       Padding(
           padding: const EdgeInsets.all(16.0),
           child: IconButton(

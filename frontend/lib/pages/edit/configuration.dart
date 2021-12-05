@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:conway/widgets/widgets.dart';
 
 class Configuration extends StatefulWidget {
   final ValueSetter<Size>? onCreate;
@@ -10,33 +11,36 @@ class Configuration extends StatefulWidget {
 }
 
 class _ConfigurationState extends State<Configuration> {
-  final TextEditingController _width = TextEditingController(text: '10');
-  final TextEditingController _height = TextEditingController(text: '10');
+  int _width = 10;
+  int _height = 10;
+
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   void _create() {
-    int width = int.tryParse(_width.text) ?? 10;
-    int height = int.tryParse(_height.text) ?? 10;
-
-    widget.onCreate?.call(Size(width.toDouble(), height.toDouble()));
+    widget.onCreate?.call(Size(_width.toDouble(), _height.toDouble()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(children: <Widget>[
-          TextField(
-              controller: _width,
-              decoration: const InputDecoration(label: Text('Width'))),
-          TextField(
-              controller: _height,
-              decoration: const InputDecoration(label: Text('Height'))),
-          Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton.icon(
-                  onPressed: _create,
-                  label: const Text('CREATE'),
-                  icon: const Icon(Icons.check)))
-        ]));
+        child: Form(
+            key: _form,
+            child: Column(children: <Widget>[
+              NumberFormField(
+                  value: 10,
+                  label: const Text('Width'),
+                  onValueChanged: (value) => setState(() => _width = value)),
+              NumberFormField(
+                  value: 10,
+                  label: const Text('Height'),
+                  onValueChanged: (value) => setState(() => _height = value)),
+              Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ElevatedButton.icon(
+                      onPressed: _create,
+                      label: const Text('CREATE'),
+                      icon: const Icon(Icons.check)))
+            ])));
   }
 }

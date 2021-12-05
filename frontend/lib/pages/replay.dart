@@ -9,7 +9,6 @@ class Replay extends StatefulWidget {
 }
 
 class _ReplayState extends State<Replay> {
-  int _frame = 0;
   bool _playing = true;
 
   final List<ConwayFrame> _frames = [
@@ -24,13 +23,6 @@ class _ReplayState extends State<Replay> {
     ]),
   ];
 
-  void _nextPage() {
-    setState(() {
-      _frame += 1;
-      _frame = _frame % _frames.length;
-    });
-  }
-
   void _playingToggle() {
     setState(() {
       _playing = !_playing;
@@ -40,10 +32,6 @@ class _ReplayState extends State<Replay> {
   @override
   Widget build(BuildContext context) {
     return ConwayPlayer(
-        frames: _frames,
-        frame: _frame,
-        playing: _playing,
-        onNextPage: _nextPage,
-        onPlayingToggle: _playingToggle);
+        frames: _frames, playing: _playing, onPlayingToggle: _playingToggle);
   }
 }
