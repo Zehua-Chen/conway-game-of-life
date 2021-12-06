@@ -20,7 +20,9 @@ class _Painter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _Painter oldDelegate) {
-    return oldDelegate.alive != alive;
+    return oldDelegate.alive != alive ||
+        oldDelegate.aliveColor != aliveColor ||
+        oldDelegate.deadColor != deadColor;
   }
 }
 
