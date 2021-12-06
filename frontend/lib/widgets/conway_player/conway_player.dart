@@ -20,7 +20,8 @@ class ConwayPlayer extends StatefulWidget {
       this.initFrame = 0,
       this.durationPerFrame = const Duration(seconds: 1),
       this.onPlayingToggle})
-      : super(key: key);
+      : assert(initFrame < frames.length),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ConwayPlayerState();
@@ -86,6 +87,8 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.frames.length - 1);
+
     return Column(children: [
       Expanded(child: ConwayGrid(frame: widget.frames[_frame])),
       Padding(
@@ -96,7 +99,7 @@ class _ConwayPlayerState extends State<ConwayPlayer> {
                 child: Text('$_frame')),
             Expanded(
                 child: LinearProgressIndicator(
-                    value: _frame / (widget.frames.length - 1))),
+                    value: (_frame + 1) / widget.frames.length)),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text('${widget.frames.length - 1}'))

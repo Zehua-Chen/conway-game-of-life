@@ -2,11 +2,7 @@ class ConwayFrame {
   int width = 0;
   int height = 0;
 
-  List<bool> cells = [];
-
-  ConwayFrame({required this.width, required this.height, required this.cells})
-      : assert(height % 2 != 0),
-        assert(width % 2 != 0);
+  List<bool> _cells = [];
 
   ConwayFrame.fromNestedList(List<List<bool>> rows) {
     height = rows.length;
@@ -15,10 +11,10 @@ class ConwayFrame {
     width = rows[0].length;
     assert(width % 2 != 0);
 
-    cells = [];
+    _cells = [];
 
     for (List<bool> row in rows) {
-      cells.addAll(row);
+      _cells.addAll(row);
     }
   }
 
@@ -26,14 +22,16 @@ class ConwayFrame {
       {required this.width, required this.height, bool alive = false})
       : assert(width % 2 != 0),
         assert(height % 2 != 0) {
-    cells = [];
+    _cells = [];
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        cells.add(alive);
+        _cells.add(alive);
       }
     }
   }
+
+  List<bool> get cells => _cells;
 
   int get _centerXOffset {
     return (width / 2).floor();
@@ -63,13 +61,13 @@ class ConwayFrame {
     x += _centerXOffset;
     y += _centerYOffset;
 
-    return cells[y * width + x];
+    return _cells[y * width + x];
   }
 
   void set(int x, int y, bool alive) {
     x += _centerXOffset;
     y += _centerYOffset;
 
-    cells[y * width + x] = alive;
+    _cells[y * width + x] = alive;
   }
 }

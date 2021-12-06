@@ -17,7 +17,7 @@ class ConwayGrid extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          for (int y = frame.minY; y <= frame.maxY; y++)
+          for (int y = frame.maxY; y >= frame.minY; y--)
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

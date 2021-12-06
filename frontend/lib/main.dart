@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/replay.dart';
+import 'pages/replay/replay.dart';
 import 'pages/edit/edit.dart';
 
 void main() {

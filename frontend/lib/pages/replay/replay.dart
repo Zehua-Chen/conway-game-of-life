@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:conway/widgets/conway_player/conway_player.dart';
+import 'load.dart';
 
 class Replay extends StatefulWidget {
   const Replay({Key? key}) : super(key: key);
@@ -10,18 +11,7 @@ class Replay extends StatefulWidget {
 
 class _ReplayState extends State<Replay> {
   bool _playing = true;
-
-  final List<ConwayFrame> _frames = [
-    ConwayFrame.fromNestedList([
-      [true, false, true]
-    ]),
-    ConwayFrame.fromNestedList([
-      [false, false, true]
-    ]),
-    ConwayFrame.fromNestedList([
-      [false, false, false]
-    ]),
-  ];
+  List<ConwayFrame>? _frames;
 
   void _playingToggle() {
     setState(() {
@@ -29,9 +19,20 @@ class _ReplayState extends State<Replay> {
     });
   }
 
+  void _onFrameOpened(List<ConwayFrame> frames) {
+    setState(() {
+      _frames = frames;
+      print(_frames?.length);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_frames == null) {
+      return Load(onFramesOpened: _onFrameOpened);
+    }
+
     return ConwayPlayer(
-        frames: _frames, playing: _playing, onPlayingToggle: _playingToggle);
+        frames: _frames!, playing: _playing, onPlayingToggle: _playingToggle);
   }
 }
