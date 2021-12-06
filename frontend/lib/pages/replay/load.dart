@@ -5,9 +5,9 @@ import 'package:conway/schema/schema.dart' as schema;
 import 'package:conway/widgets/conway_grid/conway_grid.dart';
 
 class Load extends StatefulWidget {
-  ValueSetter<List<ConwayFrame>> onFramesOpened;
+  final ValueSetter<List<ConwayFrame>> onFramesOpened;
 
-  Load({Key? key, required this.onFramesOpened}) : super(key: key);
+  const Load({Key? key, required this.onFramesOpened}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LoadState();
@@ -38,7 +38,15 @@ class _LoadState extends State<Load> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const <Widget>[Text('Drop File')],
+          children: <Widget>[
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const <Widget>[
+                  Text('Drop .json File to Get Started',
+                      style: TextStyle(fontSize: 45))
+                ])
+          ],
         )
       ],
     );

@@ -22,7 +22,6 @@ class _ReplayState extends State<Replay> {
   void _onFrameOpened(List<ConwayFrame> frames) {
     setState(() {
       _frames = frames;
-      print(_frames?.length);
     });
   }
 
