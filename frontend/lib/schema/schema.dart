@@ -1,3 +1,5 @@
+export 'conway_frame.dart';
+
 class LivingCell {
   int x = 0;
   int y = 0;
