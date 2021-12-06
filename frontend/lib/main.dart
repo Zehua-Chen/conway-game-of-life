@@ -40,6 +40,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         });
   }
 
+  void _onIndexChange(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   String _title() {
     switch (_selectedIndex) {
       case 0:
@@ -64,6 +70,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final desktop = MediaQuery.of(context).size.width >= 700;
+
     return Scaffold(
         appBar: AppBar(
             // Here we take the value from the MyHomePage object that was created by
@@ -78,23 +86,28 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ]),
         body: Row(
           children: [
-            NavigationRail(
-              selectedIndex: _selectedIndex,
-              labelType: NavigationRailLabelType.selected,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              destinations: const [
-                NavigationRailDestination(
-                    icon: Icon(Icons.create), label: Text('Create')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.replay), label: Text('Replay')),
-              ],
-            ),
+            if (desktop)
+              NavigationRail(
+                selectedIndex: _selectedIndex,
+                labelType: NavigationRailLabelType.selected,
+                onDestinationSelected: _onIndexChange,
+                destinations: const [
+                  NavigationRailDestination(
+                      icon: Icon(Icons.create), label: Text('Create')),
+                  NavigationRailDestination(
+                      icon: Icon(Icons.replay), label: Text('Replay')),
+                ],
+              ),
             Expanded(child: Center(child: _body()))
           ],
-        ));
+        ),
+        bottomNavigationBar: desktop
+            ? null
+            : BottomNavigationBar(items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.create), label: 'Create'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.create), label: 'Replay')
+              ], currentIndex: _selectedIndex, onTap: _onIndexChange));
   }
 }

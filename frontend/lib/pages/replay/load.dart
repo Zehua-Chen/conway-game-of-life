@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:conway/schema/schema.dart' as schema;
 import 'package:conway/widgets/conway_grid/conway_grid.dart';
@@ -37,15 +37,13 @@ class _LoadState extends State<Load> {
             onDrop: _onDrop),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const <Widget>[
-                  Text('Drop .json File to Get Started',
-                      style: TextStyle(fontSize: 45))
-                ])
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Flexible(
+                  child: Text('Drop .json File to Get Started',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline4))
+            ])
           ],
         )
       ],
