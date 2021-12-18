@@ -24,6 +24,8 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+    - unordered-containers
 
 executables:
   conway-exe:
