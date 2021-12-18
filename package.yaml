@@ -26,6 +26,8 @@ library:
   source-dirs: src
   dependencies:
     - unordered-containers
+  ghc-options:
+    - -Wall
 
 executables:
   conway-exe:
@@ -35,6 +37,7 @@ executables:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
+      - -Wall
     dependencies:
       - conway
 
@@ -46,8 +49,10 @@ tests:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
+      - -Wall
     dependencies:
       - conway
       - test-framework
       - test-framework-hunit
       - HUnit
+      - unordered-containers
