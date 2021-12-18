@@ -1,7 +1,7 @@
 module Main where
 
-import Lib
+import Conway.Simulate
 
 main :: IO ()
 main =
-  putStrLn "hello haskell"
+  print name

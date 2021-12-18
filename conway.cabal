@@ -25,8 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
-      Schema
+      Conway.IO
+      Conway.Simulate
   other-modules:
       Paths_conway
   hs-source-dirs:
