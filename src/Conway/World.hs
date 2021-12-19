@@ -41,3 +41,6 @@ minY h = negate $ maxX h
 
 maxY :: Int -> Int
 maxY h = h `div` 2
+
+liveCount :: World -> Int
+liveCount world = foldr (\cell count -> if cell then count + 1 else count) (0 :: Int) (grid world)
