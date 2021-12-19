@@ -27,6 +27,7 @@ library
   exposed-modules:
       Conway.IO
       Conway.Simulate
+      Conway.World
   other-modules:
       Paths_conway
   hs-source-dirs:
@@ -53,6 +54,7 @@ test-suite conway-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Simulate
       Paths_conway
   hs-source-dirs:
       test
