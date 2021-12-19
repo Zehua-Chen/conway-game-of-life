@@ -1,10 +1,13 @@
 {-# LANGUAGE TupleSections #-}
 
-module Conway.Simulate where
+module Conway.Simulate (simulate, grow) where
 
 import Control.Monad (guard)
 import Conway.World
 import qualified Data.HashMap.Strict as Map
+
+grow :: World -> IO World
+grow _ = undefined
 
 simulate :: World -> IO World
 simulate world = do
@@ -15,8 +18,8 @@ simulate world = do
       ys = [(minY $ height world) .. (maxY $ height world)]
       xys = concatMap (\x -> map (x,) ys) xs
       newGrid = foldr (_simulate (grid world)) Map.empty xys
-   in do
-        return World {width = width world, height = height world, grid = newGrid}
+
+  return World {width = width world, height = height world, grid = newGrid}
   where
     _simulate :: Grid -> (Int, Int) -> Grid -> Grid
     _simulate oldWorld pos@(x, y) newGrid = case Map.lookup pos oldWorld of

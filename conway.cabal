@@ -54,7 +54,8 @@ test-suite conway-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Simulate
+      Simulate.Basic
+      World
       Paths_conway
   hs-source-dirs:
       test
