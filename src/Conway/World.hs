@@ -1,6 +1,6 @@
 module Conway.World where
 
-import Control.Monad (guard)
+import qualified Control.Monad as Monad
 import qualified Data.HashMap.Strict as Map
 
 type Grid = Map.HashMap (Int, Int) Bool
@@ -8,21 +8,28 @@ type Grid = Map.HashMap (Int, Int) Bool
 data World = World {width :: Int, height :: Int, grid :: Grid}
   deriving (Eq, Show)
 
+-- | Make sure a world has odd height and odd width
+guard :: World -> IO ()
+guard world = do
+  Monad.guard $ odd $ height world
+  Monad.guard $ odd $ width world
+
+-- | Convert a 2D bool list into a World
 fromList :: [[Bool]] -> IO World
 fromList rows =
   let h = length rows
       w = length $ head rows
    in do
-        guard $ odd h
-        guard $ odd w
+        Monad.guard $ odd h
+        Monad.guard $ odd w
 
-        let g = forEachRow rows Map.empty (minY h) w
+        let g = forEachRow rows Map.empty (maxY h) w
          in do return World {width = w, height = h, grid = g}
   where
     forEachRow [] g _ _ = g
     forEachRow (r : rs) g y w =
       let newG = forEachCol r g (minX w) y
-       in forEachRow rs newG (y + 1) w
+       in forEachRow rs newG (y - 1) w
 
     forEachCol [] g _ _ = g
     forEachCol (c : cs) g x y =

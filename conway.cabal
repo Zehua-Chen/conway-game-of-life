@@ -55,6 +55,7 @@ test-suite conway-test
   main-is: Spec.hs
   other-modules:
       Simulate.Basic
+      Simulate.Grow
       World
       Paths_conway
   hs-source-dirs:

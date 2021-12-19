@@ -24,7 +24,7 @@ test =
 
             assertEqual "two live cells" 2 (World.liveCount newWorld)
             assertEqual "two live cells" (Just True) (Map.lookup (0, 0) newGrid)
-            assertEqual "two live cells" (Just True) (Map.lookup (0, -1) newGrid)
+            assertEqual "two live cells" (Just True) (Map.lookup (0, 1) newGrid)
         ),
       testCase
         "simulate 2"
