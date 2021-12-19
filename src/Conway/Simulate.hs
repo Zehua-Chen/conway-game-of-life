@@ -2,6 +2,7 @@
 
 module Conway.Simulate (simulate, grow) where
 
+import qualified Conway.Partition as Partition
 import Conway.World
 import qualified Data.HashMap.Strict as Map
 
@@ -60,12 +61,12 @@ grow world = do
         grid = newGrid
       }
 
-simulate :: World -> IO World
-simulate world = do
+simulate :: Partition.Slice -> World -> IO World
+simulate slice world = do
   Conway.World.guard world
 
-  let xs = [(minX $ width world) .. (maxX $ width world)]
-      ys = [(minY $ height world) .. (maxY $ height world)]
+  let xs = [(Partition.minX slice) .. (Partition.maxX slice)]
+      ys = [(Partition.minY slice) .. (Partition.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
       newGrid = simulateCells xys (grid world)
 

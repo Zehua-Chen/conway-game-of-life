@@ -1,11 +1,21 @@
 module Simulate.Basic (Simulate.Basic.test) where
 
+import qualified Conway.Partition as Partition
 import qualified Conway.Simulate as Conway
 import qualified Conway.World as World
 import qualified Data.HashMap.Strict as Map
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit
+
+slice3x3 :: Partition.Slice
+slice3x3 =
+  Partition.Slice
+    { Partition.minX = -1,
+      Partition.maxX = 1,
+      Partition.minY = -1,
+      Partition.maxY = 1
+    }
 
 test :: Test.Framework.Test
 test =
@@ -18,7 +28,7 @@ test =
               World.fromList
                 [[True, False, False], [False, True, True], [False, False, False]]
 
-            newWorld <- Conway.simulate world
+            newWorld <- Conway.simulate slice3x3 world
 
             let newGrid = World.grid newWorld
 
@@ -33,7 +43,7 @@ test =
               World.fromList
                 [[True, True, True], [True, True, True], [True, True, True]]
 
-            newWorld <- Conway.simulate world
+            newWorld <- Conway.simulate slice3x3 world
 
             let newGrid = World.grid newWorld
 
