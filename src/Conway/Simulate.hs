@@ -5,29 +5,6 @@ module Conway.Simulate (simulate, grow) where
 import Conway.World
 import qualified Data.HashMap.Strict as Map
 
-neighbors :: Int -> Int -> [(Int, Int)]
-neighbors x y =
-  [ (x + 1, y),
-    (x - 1, y),
-    (x, y + 1),
-    (x, y - 1),
-    (x + 1, y + 1),
-    (x + 1, y - 1),
-    (x - 1, y + 1),
-    (x - 1, y - 1)
-  ]
-
-liveNeighbors :: Int -> Int -> Grid -> Int
-liveNeighbors x y g =
-  foldr
-    ( \neighbor count ->
-        case Map.lookup neighbor g of
-          Just alive -> if alive then count + 1 else count
-          Nothing -> count
-    )
-    0
-    (neighbors x y)
-
 simulateCells :: [(Int, Int)] -> Grid -> Grid
 simulateCells cells oldGrid = foldr (_simulate oldGrid) Map.empty cells
   where

@@ -51,3 +51,26 @@ maxY h = h `div` 2
 
 liveCount :: World -> Int
 liveCount world = foldr (\cell count -> if cell then count + 1 else count) (0 :: Int) (grid world)
+
+neighbors :: Int -> Int -> [(Int, Int)]
+neighbors x y =
+  [ (x + 1, y),
+    (x - 1, y),
+    (x, y + 1),
+    (x, y - 1),
+    (x + 1, y + 1),
+    (x + 1, y - 1),
+    (x - 1, y + 1),
+    (x - 1, y - 1)
+  ]
+
+liveNeighbors :: Int -> Int -> Grid -> Int
+liveNeighbors x y g =
+  foldr
+    ( \neighbor count ->
+        case Map.lookup neighbor g of
+          Just alive -> if alive then count + 1 else count
+          Nothing -> count
+    )
+    0
+    (neighbors x y)

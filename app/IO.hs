@@ -1,4 +1,4 @@
-module Conway.IO where
+module IO where
 
 data Cell = Live | Dead
 
