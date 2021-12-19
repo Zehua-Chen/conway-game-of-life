@@ -25,3 +25,12 @@ partition sliceWidth sliceHeight world =
 
     xys :: [((Int, Int), (Int, Int))]
     xys = concatMap (\x -> map (x,) ys) xs
+
+fromWorld :: World.World -> Slice
+fromWorld world =
+  Slice
+    { minX = World.minX $ World.width world,
+      maxX = World.maxX $ World.width world,
+      minY = World.minY $ World.height world,
+      maxY = World.maxY $ World.height world
+    }
