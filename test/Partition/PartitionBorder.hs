@@ -2,7 +2,6 @@ module Partition.PartitionBorder (Partition.PartitionBorder.test) where
 
 import qualified Conway.Partition as Partition
 import qualified Conway.World as World
-import qualified Data.HashMap.Strict as Map
 import qualified Data.HashSet as Set
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
@@ -15,7 +14,7 @@ test =
     [ testCase
         "partition/border/dividable-0"
         ( do
-            let world = World.World {World.width = 3, World.height = 3, World.grid = Map.empty}
+            let world = World.fromWH 3 3
                 borders = Partition.partitionBorders 1 1 world
                 expected =
                   [ (-1, -1),
@@ -35,7 +34,7 @@ test =
       testCase
         "partition/border/dividable-1"
         ( do
-            let world = World.World {World.width = 9, World.height = 9, World.grid = Map.empty}
+            let world = World.fromWH 9 9
                 borders = Partition.partitionBorders 3 3 world
 
             assertEqual "size" 56 (length borders)
@@ -43,7 +42,7 @@ test =
       testCase
         "partition/border/dividable-2"
         ( do
-            let world = World.World {World.width = 3, World.height = 3, World.grid = Map.empty}
+            let world = World.fromWH 3 3
                 borders = Partition.partitionBorders 3 3 world
 
             assertEqual "size" 0 (length borders)
@@ -51,7 +50,7 @@ test =
       testCase
         "partition/border/not-dividable-0"
         ( do
-            let world = World.World {World.width = 5, World.height = 5, World.grid = Map.empty}
+            let world = World.fromWH 5 5
                 borders = Partition.partitionBorders 2 2 world
                 expected =
                   [ (-2, 2),

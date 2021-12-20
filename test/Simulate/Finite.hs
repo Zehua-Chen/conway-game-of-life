@@ -3,7 +3,6 @@ module Simulate.Finite (Simulate.Finite.test) where
 import qualified Conway.Partition as Partition
 import qualified Conway.Simulate as Conway
 import qualified Conway.World as World
-import qualified Data.HashMap.Strict as Map
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit
@@ -25,8 +24,8 @@ test =
 
             assertEqual "exactly 9 cells" 9 (length newGrid)
             assertEqual "two live cells" 2 (World.liveCount newWorld)
-            assertEqual "two live cells" (Just True) (Map.lookup (0, 0) newGrid)
-            assertEqual "two live cells" (Just True) (Map.lookup (0, 1) newGrid)
+            assertEqual "two live cells" True (World.getCell newWorld (0, 0))
+            assertEqual "two live cells" True (World.getCell newWorld (0, 1))
         ),
       testCase
         "simulate/finite/1"
@@ -37,9 +36,7 @@ test =
 
             newWorld <- Conway.simulate (Partition.fromWorld world) world
 
-            let newGrid = World.grid newWorld
-
             assertEqual "" 9 (length $ World.grid world)
-            assertEqual "center cell dies" (Just False) (Map.lookup (0, 0) newGrid)
+            assertEqual "center cell dies" False (World.getCell newWorld (0, 0))
         )
     ]
