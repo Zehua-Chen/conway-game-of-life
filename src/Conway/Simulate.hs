@@ -2,6 +2,7 @@
 
 module Conway.Simulate (simulate, grow, simulateSync, simulateAsync) where
 
+import Control.Parallel.Strategies
 import qualified Conway.Partition as Partition
 import Conway.World
 import Data.Foldable
@@ -26,10 +27,8 @@ simulateCell world pos@(x, y) =
 simulateCells :: [Vec2] -> World -> [(Vec2, Bool)]
 simulateCells cells oldWorld = map (simulateCell oldWorld) cells
 
-grow :: World -> IO World
+grow :: World -> Eval World
 grow world = do
-  Conway.World.guard world
-
   -- four corners of the expanded grid does not need to be simulated,
   -- as they will never have 3 live neighbors in order to be alive
 
@@ -58,10 +57,8 @@ grow world = do
         (if growSizeTB > 0 then growCellsTB else [])
     )
 
-simulate :: Partition.Slice -> World -> IO World
+simulate :: Partition.Slice -> World -> Eval World
 simulate slice world = do
-  Conway.World.guard world
-
   let xs = [(Partition.minX slice) .. (Partition.maxX slice)]
       ys = [(Partition.minY slice) .. (Partition.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
@@ -70,18 +67,20 @@ simulate slice world = do
   return newWorld
 
 simulateSync :: World -> IO World
-simulateSync old = do
-  new <- simulate (Partition.fromWorld old) old
-  grown <- grow old
+simulateSync old = return $
+  runEval $ do
+    new <- simulate (Partition.fromWorld old) old
+    grown <- grow old
 
-  return $ stack new grown
+    return $ stack new grown
 
 simulateAsync :: Int -> Int -> World -> IO World
-simulateAsync sliceWidth sliceHeight old = do
-  newWorld <- foldrM simulate old slices
-  let partitionBorderCells = simulateCells (toList $ Partition.partitionBorders sliceWidth sliceHeight old) old
-      newWorldWithBorder = setCells newWorld partitionBorderCells
-  grown <- grow old
-  return $ stack newWorldWithBorder grown
+simulateAsync sliceWidth sliceHeight old = return $
+  runEval $ do
+    newWorld <- foldrM simulate old slices
+    let partitionBorderCells = simulateCells (toList $ Partition.partitionBorders sliceWidth sliceHeight old) old
+        newWorldWithBorder = setCells newWorld partitionBorderCells
+    grown <- grow old
+    return $ stack newWorldWithBorder grown
   where
     slices = Partition.partition sliceWidth sliceHeight old

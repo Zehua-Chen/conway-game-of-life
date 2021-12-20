@@ -47,7 +47,7 @@ executable conway-exe
       Paths_conway
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N -Wall -eventlog
   build-depends:
       base >=4.7 && <5
     , conway
@@ -66,11 +66,12 @@ test-suite conway-test
       Paths_conway
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -eventlog
   build-depends:
       HUnit
     , base >=4.7 && <5
     , conway
+    , parallel
     , test-framework
     , test-framework-hunit
     , unordered-containers

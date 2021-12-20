@@ -36,10 +36,12 @@ executables:
     main: Main.hs
     source-dirs: app
     ghc-options:
+      - -O2
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
       - -Wall
+      - -eventlog
     dependencies:
       - conway
 
@@ -52,9 +54,11 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
       - -Wall
+      - -eventlog
     dependencies:
       - conway
       - test-framework
       - test-framework-hunit
       - HUnit
       - unordered-containers
+      - parallel
