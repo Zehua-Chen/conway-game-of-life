@@ -1,4 +1,4 @@
-module Partition.Border (Partition.Border.test) where
+module Partition.PartitionBorder (Partition.PartitionBorder.test) where
 
 import qualified Conway.Partition as Partition
 import qualified Conway.World as World
@@ -16,7 +16,7 @@ test =
         "partition/border/dividable-0"
         ( do
             let world = World.World {World.width = 3, World.height = 3, World.grid = Map.empty}
-                borders = Partition.borders 1 1 world
+                borders = Partition.partitionBorders 1 1 world
                 expected =
                   [ (-1, -1),
                     (0, -1),
@@ -36,7 +36,7 @@ test =
         "partition/border/dividable-1"
         ( do
             let world = World.World {World.width = 9, World.height = 9, World.grid = Map.empty}
-                borders = Partition.borders 3 3 world
+                borders = Partition.partitionBorders 3 3 world
 
             assertEqual "size" 56 (length borders)
         ),
@@ -44,7 +44,7 @@ test =
         "partition/border/dividable-2"
         ( do
             let world = World.World {World.width = 3, World.height = 3, World.grid = Map.empty}
-                borders = Partition.borders 3 3 world
+                borders = Partition.partitionBorders 3 3 world
 
             assertEqual "size" 0 (length borders)
         ),
@@ -52,7 +52,7 @@ test =
         "partition/border/not-dividable-0"
         ( do
             let world = World.World {World.width = 5, World.height = 5, World.grid = Map.empty}
-                borders = Partition.borders 2 2 world
+                borders = Partition.partitionBorders 2 2 world
                 expected =
                   [ (-2, 2),
                     (-1, 2),

@@ -55,8 +55,9 @@ test-suite conway-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Partition.Border
       Partition.Partition
+      Partition.PartitionBorder
+      Simulate.Async
       Simulate.Basic
       Simulate.Grow
       World

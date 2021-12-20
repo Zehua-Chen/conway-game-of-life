@@ -1,5 +1,6 @@
-import qualified Partition.Border
 import qualified Partition.Partition
+import qualified Partition.PartitionBorder
+import qualified Simulate.Async
 import qualified Simulate.Basic
 import qualified Simulate.Grow
 import Test.Framework (Test, defaultMain)
@@ -9,9 +10,10 @@ tests :: [Test.Framework.Test]
 tests =
   [ World.test,
     Partition.Partition.test,
-    Partition.Border.test,
+    Partition.PartitionBorder.test,
     Simulate.Basic.test,
-    Simulate.Grow.test
+    Simulate.Grow.test,
+    Simulate.Async.test
   ]
 
 main :: IO ()

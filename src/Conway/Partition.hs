@@ -7,7 +7,7 @@ module Conway.Partition
     minY,
     maxY,
     partition,
-    borders,
+    partitionBorders,
     fromWorld,
   )
 where
@@ -37,8 +37,10 @@ partition sliceWidth sliceHeight world =
     xys :: [((Int, Int), (Int, Int))]
     xys = concatMap (\x -> map (x,) ys) xs
 
-borders :: Int -> Int -> World.World -> Set.HashSet (Int, Int)
-borders sliceWidth sliceHeight world =
+-- | Given slice width adn slice height, return a set of cells that are
+-- on the borders of partition
+partitionBorders :: Int -> Int -> World.World -> Set.HashSet (Int, Int)
+partitionBorders sliceWidth sliceHeight world =
   Set.union
     (vertical (World.minX (World.width world) + (sliceWidth - 1)) Set.empty)
     (horizontal (World.minY (World.height world) + (sliceHeight - 1)) Set.empty)

@@ -1,12 +1,15 @@
 {-# LANGUAGE TupleSections #-}
 
-module Conway.Simulate (simulate, grow, simulateSync) where
+module Conway.Simulate (simulate, grow, simulateSync, simulateAsync) where
 
 import qualified Conway.Partition as Partition
 import Conway.World
+import Data.Foldable
 import qualified Data.HashMap.Strict as Map
 
-simulateCells :: [(Int, Int)] -> Grid -> Grid
+-- import Debug.Trace
+
+simulateCells :: (Foldable m) => m (Int, Int) -> Grid -> Grid
 simulateCells cells oldGrid = foldr (_simulate oldGrid) Map.empty cells
   where
     _simulate :: Grid -> (Int, Int) -> Grid -> Grid
@@ -100,4 +103,17 @@ simulate slice world = do
 simulateSync :: World -> IO World
 simulateSync old = do
   new <- simulate (Partition.fromWorld old) old
-  grow new
+  grown <- grow old
+
+  return World {width = width grown, height = height grown, grid = Map.union (grid grown) (grid new)}
+
+simulateAsync :: Int -> Int -> World -> IO World
+simulateAsync sliceWidth sliceHeight old = do
+  newWorld <- foldrM simulate old slices
+  let borderGrid = simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) (grid old)
+      newGrid = Map.unionWith const borderGrid (grid newWorld)
+      newWorldWithBorder = World {width = width newWorld, height = height newWorld, grid = newGrid}
+  grown <- grow old
+  return World {width = width grown, height = height grown, grid = Map.union (grid grown) (grid newWorldWithBorder)}
+  where
+    slices = Partition.partition sliceWidth sliceHeight old

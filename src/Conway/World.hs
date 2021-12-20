@@ -6,7 +6,21 @@ import qualified Data.HashMap.Strict as Map
 type Grid = Map.HashMap (Int, Int) Bool
 
 data World = World {width :: Int, height :: Int, grid :: Grid}
-  deriving (Eq, Show)
+  deriving (Eq)
+
+instance Show World where
+  show world =
+    concatMap
+      ( \y ->
+          concatMap
+            ( \x -> case Map.lookup (x, y) (grid world) of
+                Just cell -> if cell then "X " else ". "
+                Nothing -> "? "
+            )
+            [minX $ width world .. maxX $ width world]
+            ++ "\n"
+      )
+      (reverse [minY $ height world .. maxY $ height world])
 
 -- | Make sure a world has odd height and odd width
 guard :: World -> IO ()
