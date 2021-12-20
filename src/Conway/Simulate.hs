@@ -5,7 +5,6 @@ module Conway.Simulate (simulate, grow, simulateSync, simulateAsync) where
 import qualified Conway.Partition as Partition
 import Conway.World
 import Data.Foldable
-import qualified Data.HashMap.Strict as Map
 
 -- import Debug.Trace
 
@@ -48,36 +47,16 @@ grow world = do
       growSize (_, live) count = if live then count + 1 else count
       growSizeTB = foldr growSize 0 growCellsTB
       growSizeLR = foldr growSize 0 growCellsLR
-      newGrid =
-        Map.union
-          (grid world)
-          ( Map.union
-              (if growSizeTB > 0 then Map.fromList growCellsTB else Map.empty)
-              (if growSizeLR > 0 then Map.fromList growCellsLR else Map.empty)
-          )
+      grownWorld =
+        fromWH
+          (if growSizeLR > 0 then width world + 2 else width world)
+          (if growSizeTB > 0 then height world + 2 else height world)
 
-  return $
-    fillMissingCells
-      World
-        { width = if growSizeLR > 0 then width world + 2 else width world,
-          height = if growSizeTB > 0 then height world + 2 else height world,
-          grid = newGrid
-        }
-  where
-    fillMissingCells :: World -> World
-    fillMissingCells broken =
-      let xs = [(minX broken) .. (maxX broken)]
-          ys = [(minY broken) .. (maxY broken)]
-          xys = concatMap (\x -> map (x,) ys) xs
-          newGrid =
-            foldr
-              ( \xy w -> case Map.lookup xy w of
-                  Just _ -> w
-                  Nothing -> Map.insert xy False w
-              )
-              (grid broken)
-              xys
-       in World {width = width broken, height = height broken, grid = newGrid}
+  return
+    ( setCells
+        (setCells grownWorld (if growSizeLR > 0 then growCellsLR else []))
+        (if growSizeTB > 0 then growCellsTB else [])
+    )
 
 simulate :: Partition.Slice -> World -> IO World
 simulate slice world = do
