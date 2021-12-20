@@ -10,7 +10,9 @@ import Data.Foldable
 
 -- import Debug.Trace
 
-simulateCell :: Slice.Slice -> World -> Vec2 -> (Vec2, Bool)
+type SimulateResult = (Vec2, Bool)
+
+simulateCell :: Slice.Slice -> World -> Vec2 -> SimulateResult
 simulateCell slice world pos@(x, y) =
   let live = liveNeighbors slice world x y
    in if getCell world pos
@@ -25,7 +27,7 @@ simulateCell slice world pos@(x, y) =
               else (pos, False)
           )
 
-simulateCells :: [Vec2] -> Slice.Slice -> World -> [(Vec2, Bool)]
+simulateCells :: [Vec2] -> Slice.Slice -> World -> [SimulateResult]
 simulateCells cells slice oldWorld = map (simulateCell slice oldWorld) cells
 
 grow :: World -> Eval World
@@ -59,19 +61,17 @@ grow world = do
         (if growSizeTB > 0 then growCellsTB else [])
     )
 
-simulate :: Slice.Slice -> World -> Eval World
+simulate :: Slice.Slice -> World -> [SimulateResult]
 simulate slice world = do
   let xs = [(Slice.minX slice) .. (Slice.maxX slice)]
       ys = [(Slice.minY slice) .. (Slice.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
-      newWorld = setCells world (simulateCells xys slice world)
-
-  return newWorld
+   in simulateCells xys slice world
 
 simulateSync :: World -> IO World
 simulateSync old = return $
   runEval $ do
-    new <- simulate (Partition.fromWorld old) old
+    let new = setCells old (simulate (Partition.fromWorld old) old)
     grown <- grow old
 
     return $ stack new grown
@@ -79,8 +79,8 @@ simulateSync old = return $
 simulateAsync :: Int -> Int -> World -> IO World
 simulateAsync sliceWidth sliceHeight old = return $
   runEval $ do
-    newWorld <- foldrM simulate old slices
-    let partitionBorderCells =
+    let newWorld = setCells old (concatMap (`simulate` old) slices)
+        partitionBorderCells =
           simulateCells
             (toList $ Partition.partitionBorders sliceWidth sliceHeight old)
             (Partition.fromWorld old)

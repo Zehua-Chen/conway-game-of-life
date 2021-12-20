@@ -2,7 +2,7 @@ module Simulate.Finite (Simulate.Finite.test) where
 
 import Control.Parallel.Strategies
 import qualified Conway.Partition as Partition
-import qualified Conway.Simulate as Conway
+import qualified Conway.Simulate as Simulate
 import qualified Conway.World as World
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
@@ -19,7 +19,7 @@ test =
               World.fromList
                 [[True, False, False], [False, True, True], [False, False, False]]
 
-            let newWorld = runEval $ Conway.simulate (Partition.fromWorld world) world
+            let newWorld = World.setCells world (Simulate.simulate (Partition.fromWorld world) world)
                 newGrid = World.grid newWorld
 
             assertEqual "exactly 9 cells" 9 (length newGrid)
@@ -34,7 +34,7 @@ test =
               World.fromList
                 [[True, True, True], [True, True, True], [True, True, True]]
 
-            let newWorld = runEval $ Conway.simulate (Partition.fromWorld world) world
+            let newWorld = World.setCells world (Simulate.simulate (Partition.fromWorld world) world)
 
             assertEqual "" 9 (length $ World.grid world)
             assertEqual "center cell dies" False (World.getCell newWorld (0, 0))
