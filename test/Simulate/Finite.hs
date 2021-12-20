@@ -1,4 +1,4 @@
-module Simulate.Basic (Simulate.Basic.test) where
+module Simulate.Finite (Simulate.Finite.test) where
 
 import qualified Conway.Partition as Partition
 import qualified Conway.Simulate as Conway
@@ -11,9 +11,9 @@ import Test.HUnit
 test :: Test.Framework.Test
 test =
   testGroup
-    "simulate - basic"
+    "simulate/finite"
     [ testCase
-        "simulate 1"
+        "simulate/finite/0"
         ( do
             world <-
               World.fromList
@@ -23,13 +23,13 @@ test =
 
             let newGrid = World.grid newWorld
 
-            assertEqual "" 9 (length $ World.grid world)
+            assertEqual "exactly 9 cells" 9 (length newGrid)
             assertEqual "two live cells" 2 (World.liveCount newWorld)
             assertEqual "two live cells" (Just True) (Map.lookup (0, 0) newGrid)
             assertEqual "two live cells" (Just True) (Map.lookup (0, 1) newGrid)
         ),
       testCase
-        "simulate 2"
+        "simulate/finite/1"
         ( do
             world <-
               World.fromList

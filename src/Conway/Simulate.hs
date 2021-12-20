@@ -9,27 +9,23 @@ import qualified Data.HashMap.Strict as Map
 
 -- import Debug.Trace
 
-simulateCells :: (Foldable m) => m (Int, Int) -> Grid -> Grid
-simulateCells cells oldGrid = foldr (_simulate oldGrid) Map.empty cells
+simulateCells :: (Foldable m) => m Vec2 -> World -> [(Vec2, Bool)]
+simulateCells cells oldWorld = foldr _simulate [] cells
   where
-    _simulate :: Grid -> (Int, Int) -> Grid -> Grid
-    _simulate oldWorld pos@(x, y) newGrid =
-      let live = liveNeighbors x y oldWorld
-       in case Map.lookup pos oldWorld of
-            Just alive ->
-              if alive
-                then
-                  if live == 2 || live == 3
-                    then Map.insert pos True newGrid
-                    else Map.insert pos False newGrid
-                else
-                  if live == 3
-                    then Map.insert pos True newGrid
-                    else Map.insert pos False newGrid
-            Nothing ->
-              if live == 3
-                then Map.insert pos True newGrid
-                else Map.insert pos False newGrid
+    _simulate :: Vec2 -> [(Vec2, Bool)] -> [(Vec2, Bool)]
+    _simulate pos@(x, y) simulated =
+      let live = liveNeighbors oldWorld x y
+       in if getCell oldWorld pos
+            then
+              ( if live == 2 || live == 3
+                  then (pos, True) : simulated
+                  else (pos, False) : simulated
+              )
+            else
+              ( if live == 3
+                  then (pos, True) : simulated
+                  else (pos, False) : simulated
+              )
 
 grow :: World -> IO World
 grow world = do
@@ -38,32 +34,26 @@ grow world = do
   -- four corners of the expanded grid does not need to be simulated,
   -- as they will never have 3 live neighbors in order to be alive
 
-  let xs = [(minX $ width world) .. (maxX $ width world)]
-      ys = [(minY $ height world) .. (maxY $ height world)]
-      top = map (,maxY $ height world + 1) xs
-      bottom = map (,minY $ height world - 1) xs
-      left = map (minX $ width world - 1,) ys
-      right = map (maxX $ width world + 1,) ys
+  let xs = [(minX world) .. (maxX world)]
+      ys = [(minY world) .. (maxY world)]
+      top = map (,maxY world + 1) xs
+      bottom = map (,minY world - 1) xs
+      left = map (minX world - 1,) ys
+      right = map (maxX world + 1,) ys
       cellsTB = top ++ bottom
       cellsLR = left ++ right
-      growGridTB = simulateCells cellsTB (grid world)
-      growGridLR = simulateCells cellsLR (grid world)
-      growSizeTB =
-        foldr
-          (\cell count -> if cell then count + 1 else count)
-          (0 :: Int)
-          growGridTB
-      growSizeLR =
-        foldr
-          (\cell count -> if cell then count + 1 else count)
-          (0 :: Int)
-          growGridLR
+      growCellsTB = simulateCells cellsTB world
+      growCellsLR = simulateCells cellsLR world
+      growSize :: (Vec2, Bool) -> Int -> Int
+      growSize (_, live) count = if live then count + 1 else count
+      growSizeTB = foldr growSize 0 growCellsTB
+      growSizeLR = foldr growSize 0 growCellsLR
       newGrid =
         Map.union
           (grid world)
           ( Map.union
-              (if growSizeTB > 0 then growGridTB else Map.empty)
-              (if growSizeLR > 0 then growGridLR else Map.empty)
+              (if growSizeTB > 0 then Map.fromList growCellsTB else Map.empty)
+              (if growSizeLR > 0 then Map.fromList growCellsLR else Map.empty)
           )
 
   return $
@@ -76,8 +66,8 @@ grow world = do
   where
     fillMissingCells :: World -> World
     fillMissingCells broken =
-      let xs = [(minX $ width broken) .. (maxX $ width broken)]
-          ys = [(minY $ height broken) .. (maxY $ height broken)]
+      let xs = [(minX broken) .. (maxX broken)]
+          ys = [(minY broken) .. (maxY broken)]
           xys = concatMap (\x -> map (x,) ys) xs
           newGrid =
             foldr
@@ -96,24 +86,25 @@ simulate slice world = do
   let xs = [(Partition.minX slice) .. (Partition.maxX slice)]
       ys = [(Partition.minY slice) .. (Partition.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
-      newGrid = simulateCells xys (grid world)
+      newWorld = foldr (\(vec2, alive) w -> setCell w vec2 alive) world (simulateCells xys world)
 
-  return World {width = width world, height = height world, grid = newGrid}
+  return newWorld
 
 simulateSync :: World -> IO World
 simulateSync old = do
   new <- simulate (Partition.fromWorld old) old
   grown <- grow old
 
-  return World {width = width grown, height = height grown, grid = Map.union (grid grown) (grid new)}
+  return $ union new grown
 
 simulateAsync :: Int -> Int -> World -> IO World
 simulateAsync sliceWidth sliceHeight old = do
   newWorld <- foldrM simulate old slices
-  let borderGrid = simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) (grid old)
+  let borderGrid = Map.fromList (simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) old)
       newGrid = Map.unionWith const borderGrid (grid newWorld)
       newWorldWithBorder = World {width = width newWorld, height = height newWorld, grid = newGrid}
   grown <- grow old
-  return World {width = width grown, height = height grown, grid = Map.union (grid grown) (grid newWorldWithBorder)}
+  print slices
+  return $ union newWorldWithBorder grown
   where
     slices = Partition.partition sliceWidth sliceHeight old

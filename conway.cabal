@@ -57,9 +57,9 @@ test-suite conway-test
   other-modules:
       Partition.Partition
       Partition.PartitionBorder
-      Simulate.Async
-      Simulate.Basic
+      Simulate.Finite
       Simulate.Grow
+      Simulate.Infinite
       World
       Paths_conway
   hs-source-dirs:

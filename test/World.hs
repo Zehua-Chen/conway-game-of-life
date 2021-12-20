@@ -10,7 +10,7 @@ test =
   testGroup
     "world"
     [ testCase
-        "fromList"
+        "world/fromList"
         ( do
             world <-
               World.fromList
@@ -22,12 +22,23 @@ test =
             assertEqual "live count" 8 (World.liveCount world)
         ),
       testCase
-        "minX, maxX, minY, maxY"
+        "world/minX,maxX,minY,maxY"
         ( do
-            assertEqual "" (-2) (World.minX 5)
-            assertEqual "" 2 (World.maxX 5)
+            let world = World.fromWH 5 5
+            assertEqual "" (-2) (World.minX world)
+            assertEqual "" 2 (World.maxX world)
 
-            assertEqual "" (-2) (World.minY 5)
-            assertEqual "" 2 (World.maxY 5)
+            assertEqual "" (-2) (World.minY world)
+            assertEqual "" 2 (World.maxY world)
+        ),
+      testCase
+        "world/setCell,getCell"
+        ( do
+            let world = World.fromWH 1 1
+
+            assertEqual "" False (World.getCell world (0, 0))
+
+            let newWorld = World.setCell world (0, 0) True
+            assertEqual "" True (World.getCell newWorld (0, 0))
         )
     ]
