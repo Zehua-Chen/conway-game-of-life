@@ -27,6 +27,7 @@ library:
   dependencies:
     - unordered-containers
     - array
+    - parallel
   ghc-options:
     - -Wall
 
