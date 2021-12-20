@@ -37,6 +37,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , deepseq
     , parallel
     , unordered-containers
   default-language: Haskell2010

@@ -20,8 +20,8 @@ test =
                   [False, True, False]
                 ]
 
-            syncWorld <- Conway.simulateSync world
-            asyncWorld <- Conway.simulateAsync 1 1 world
+            let syncWorld = Conway.simulateSync world
+            let asyncWorld = Conway.simulateAsync 1 1 world
 
             assertEqual "width" 3 (World.width syncWorld)
             assertEqual "height" 3 (World.height syncWorld)
@@ -40,8 +40,8 @@ test =
                   [False, True, False]
                 ]
 
-            syncWorld <- Conway.simulateSync world
-            asyncWorld <- Conway.simulateAsync 1 1 world
+            let syncWorld = Conway.simulateSync world
+            let asyncWorld = Conway.simulateAsync 1 1 world
 
             assertEqual "width" 3 (World.width syncWorld)
             assertEqual "height" 5 (World.height syncWorld)
@@ -64,8 +64,8 @@ test =
 
             -- print world
 
-            syncWorld <- Conway.simulateSync world
-            asyncWorld <- Conway.simulateAsync 3 3 world
+            let syncWorld = Conway.simulateSync world
+            let asyncWorld = Conway.simulateAsync 3 3 world
 
             -- print syncWorld
             -- print (World.grid asyncWorld)
@@ -97,8 +97,8 @@ test =
                   [True, True, False, True, False, True, False, True, True]
                 ]
 
-            syncWorld <- Conway.simulateSync world
-            asyncWorld <- Conway.simulateAsync 3 3 world
+            let syncWorld = Conway.simulateSync world
+            let asyncWorld = Conway.simulateAsync 3 3 world
 
             assertEqual "" (length $ World.grid syncWorld) (length $ World.grid asyncWorld)
             assertEqual "" syncWorld asyncWorld

@@ -1,6 +1,5 @@
 module Simulate.Grow (Simulate.Grow.test) where
 
-import Control.Parallel.Strategies
 import qualified Conway.Simulate as Conway
 import qualified Conway.World as World
 import Test.Framework (Test, testGroup)
@@ -18,7 +17,7 @@ test =
               World.fromList
                 [[False, False, False], [False, False, False], [False, False, False]]
 
-            let newWorld = runEval $ Conway.grow world
+            let newWorld = Conway.grow world
 
             assertEqual "size does not grow" 3 (World.width newWorld)
             assertEqual "size does not grow" 3 (World.height newWorld)
@@ -31,7 +30,7 @@ test =
               World.fromList
                 [[True, True, True], [False, False, False], [False, False, False]]
 
-            let newWorld = runEval $ Conway.grow world
+            let newWorld = Conway.grow world
 
             let grid = World.grid newWorld
 
@@ -50,7 +49,7 @@ test =
               World.fromList
                 [[True, False, False], [True, False, False], [True, False, False]]
 
-            let newWorld = runEval $ Conway.grow world
+            let newWorld = Conway.grow world
 
             let grid = World.grid newWorld
 

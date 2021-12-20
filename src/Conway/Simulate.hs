@@ -30,7 +30,7 @@ simulateCell slice world pos@(x, y) =
 simulateCells :: [Vec2] -> Slice.Slice -> World -> [SimulateResult]
 simulateCells cells slice oldWorld = map (simulateCell slice oldWorld) cells
 
-grow :: World -> Eval World
+grow :: World -> World
 grow world = do
   -- four corners of the expanded grid does not need to be simulated,
   -- as they will never have 3 live neighbors in order to be alive
@@ -54,12 +54,9 @@ grow world = do
         fromWH
           (if growSizeLR > 0 then width world + 2 else width world)
           (if growSizeTB > 0 then height world + 2 else height world)
-
-  return
-    ( setCells
+   in setCells
         (setCells grownWorld (if growSizeLR > 0 then growCellsLR else []))
         (if growSizeTB > 0 then growCellsTB else [])
-    )
 
 simulate :: Slice.Slice -> World -> [SimulateResult]
 simulate slice world = do
@@ -68,25 +65,28 @@ simulate slice world = do
       xys = concatMap (\x -> map (x,) ys) xs
    in simulateCells xys slice world
 
-simulateSync :: World -> IO World
-simulateSync old = return $
+simulateSync :: World -> World
+simulateSync old =
   runEval $ do
     let new = setCells old (simulate (Partition.fromWorld old) old)
-    grown <- grow old
+        grown = grow old
 
     return $ stack new grown
 
-simulateAsync :: Int -> Int -> World -> IO World
-simulateAsync sliceWidth sliceHeight old = return $
+simulateAsync :: Int -> Int -> World -> World
+simulateAsync sliceWidth sliceHeight old =
   runEval $ do
-    let newWorld = setCells old (concatMap (`simulate` old) slices)
+    grown <- rpar (grow old)
+
+    let patchResults = concat (parMap rdeepseq (`simulate` old) slices)
+        newWorld = setCells old patchResults
         partitionBorderCells =
           simulateCells
             (toList $ Partition.partitionBorders sliceWidth sliceHeight old)
             (Partition.fromWorld old)
             old
         newWorldWithBorder = setCells newWorld partitionBorderCells
-    grown <- grow old
-    return $ stack newWorldWithBorder grown
+
+    return $ stack newWorldWithBorder (grown)
   where
     slices = Partition.partition sliceWidth sliceHeight old

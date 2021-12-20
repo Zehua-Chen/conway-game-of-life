@@ -28,6 +28,7 @@ library:
     - unordered-containers
     - array
     - parallel
+    - deepseq
   ghc-options:
     - -Wall
 

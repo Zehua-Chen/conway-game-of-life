@@ -1,6 +1,5 @@
 module Simulate.Finite (Simulate.Finite.test) where
 
-import Control.Parallel.Strategies
 import qualified Conway.Partition as Partition
 import qualified Conway.Simulate as Simulate
 import qualified Conway.World as World
