@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module Conway.Simulate (simulate, grow) where
+module Conway.Simulate (simulate, grow, simulateSync) where
 
 import qualified Conway.Partition as Partition
 import Conway.World
@@ -71,3 +71,8 @@ simulate slice world = do
       newGrid = simulateCells xys (grid world)
 
   return World {width = width world, height = height world, grid = newGrid}
+
+simulateSync :: World -> IO World
+simulateSync old = do
+  new <- simulate (Partition.fromWorld old) old
+  grow new
