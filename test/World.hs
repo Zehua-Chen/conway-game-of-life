@@ -40,5 +40,20 @@ test =
 
             let newWorld = World.setCell world (0, 0) True
             assertEqual "" True (World.getCell newWorld (0, 0))
+        ),
+      testCase
+        "world/stack"
+        ( do
+            a <- World.fromList [[False]]
+            b <- World.fromList [[True, True, True]]
+
+            let result = a `World.stack` b
+
+            assertEqual "width" 3 (World.width result)
+            assertEqual "height" 1 (World.height result)
+
+            assertEqual "(-1, 0)" True (World.getCell result (-1, 0))
+            assertEqual "(0, 0)" False (World.getCell result (0, 0))
+            assertEqual "(1, 0)" True (World.getCell result (1, 0))
         )
     ]

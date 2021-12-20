@@ -20,12 +20,12 @@ module Conway.World
 where
 
 import qualified Control.Monad as Monad
-import qualified Data.HashMap.Strict as Map
-import Data.Maybe
+import Data.Array ((!), (//))
+import qualified Data.Array as Array
 
 type Vec2 = (Int, Int)
 
-type Grid = Map.HashMap Vec2 Bool
+type Grid = Array.Array Vec2 Bool
 
 data World = World {width :: Int, height :: Int, grid :: Grid}
   deriving (Eq)
@@ -36,9 +36,7 @@ instance Show World where
       ++ concatMap
         ( \y ->
             concatMap
-              ( \x -> case Map.lookup (x, y) (grid world) of
-                  Just cell -> if cell then "X " else ". "
-                  Nothing -> "? "
+              ( \x -> if grid world ! (x, y) then "X " else ". "
               )
               [minX world .. maxX world]
               ++ "\n"
@@ -52,7 +50,16 @@ guard world = do
   Monad.guard $ odd $ width world
 
 fromWH :: Int -> Int -> World
-fromWH w h = World {width = w, height = h, grid = Map.empty}
+fromWH w h =
+  World
+    { width = w,
+      height = h,
+      grid = Array.array ((minXFromW w, minYFromH h), (maxXFromW w, maxYFromH h)) xys
+    }
+  where
+    xs = [(minXFromW w) .. (maxXFromW w)]
+    ys = [(minYFromH h) .. (maxYFromH h)]
+    xys = concatMap (\x -> map (\y -> ((x, y), False)) ys) xs
 
 -- | Convert a 2D bool list into a World
 fromList :: [[Bool]] -> IO World
@@ -61,37 +68,45 @@ fromList rows =
     Monad.guard $ odd h
     Monad.guard $ odd w
 
-    let g = forEachRow rows Map.empty (maxY emptyWorld)
-     in do return World {width = w, height = h, grid = g}
+    return $ forEachRow rows emptyWorld (maxYFromH h)
   where
-    forEachRow :: [[Bool]] -> Grid -> Int -> Grid
-    forEachRow [] g _ = g
-    forEachRow (r : rs) g y =
-      let newG = forEachCol r g (minX emptyWorld) y
-       in forEachRow rs newG (y - 1)
+    forEachRow :: [[Bool]] -> World -> Int -> World
+    forEachRow [] world _ = world
+    forEachRow (r : rs) world y =
+      let newWorld = forEachCol r world (minX emptyWorld) y
+       in forEachRow rs newWorld (y - 1)
 
-    forEachCol :: [Bool] -> Grid -> Int -> Int -> Grid
-    forEachCol [] g _ _ = g
-    forEachCol (c : cs) g x y =
-      if c
-        then forEachCol cs (Map.insert (x, y) True g) (x + 1) y
-        else forEachCol cs (Map.insert (x, y) False g) (x + 1) y
+    forEachCol :: [Bool] -> World -> Int -> Int -> World
+    forEachCol [] world _ _ = world
+    forEachCol (c : cs) world x y = forEachCol cs (setCell world (x, y) c) (x + 1) y
 
     h = length rows
     w = length $ head rows
-    emptyWorld = World {width = w, height = h, grid = Map.empty}
+    emptyWorld = fromWH w h
+
+maxXFromW :: Int -> Int
+maxXFromW w = w `div` 2
+
+minXFromW :: Int -> Int
+minXFromW w = negate $ maxXFromW w
+
+maxYFromH :: Int -> Int
+maxYFromH h = h `div` 2
+
+minYFromH :: Int -> Int
+minYFromH h = negate $ maxYFromH h
 
 minX :: World -> Int
-minX world = negate $ maxX world
+minX world = minXFromW (width world)
 
 maxX :: World -> Int
-maxX world = width world `div` 2
+maxX world = maxXFromW (width world)
 
 minY :: World -> Int
-minY world = negate $ maxY world
+minY world = minYFromH (height world)
 
 maxY :: World -> Int
-maxY world = height world `div` 2
+maxY world = maxYFromH (height world)
 
 liveCount :: World -> Int
 liveCount world = foldr (\cell count -> if cell then count + 1 else count) (0 :: Int) (grid world)
@@ -120,14 +135,16 @@ liveNeighbors world x y =
     (neighbors x y)
 
 getCell :: World -> Vec2 -> Bool
-getCell world pos = fromMaybe False (Map.lookup pos (grid world))
+getCell world pos@(x, y) =
+  (x >= minX world && x <= maxX world && y >= minY world && y <= maxY world)
+    && (grid world ! pos)
 
 setCell :: World -> Vec2 -> Bool -> World
 setCell world pos cell =
   World
     { width = width world,
       height = height world,
-      grid = Map.insert pos cell (grid world)
+      grid = grid world // [(pos, cell)]
     }
 
 setCells :: (Foldable m) => World -> m (Vec2, Bool) -> World
@@ -135,9 +152,12 @@ setCells = foldr (\(pos, v) w -> setCell w pos v)
 
 -- | merge two world by layering a on top of b
 stack :: World -> World -> World
-stack a b =
-  World
-    { width = max (width a) (width b),
-      height = max (height a) (height b),
-      grid = Map.union (grid a) (grid b)
-    }
+stack a b = withA
+  where
+    biggerWidth = max (width a) (width b)
+    biggerHeight = max (height a) (height b)
+
+    emptyWorld = fromWH biggerWidth biggerHeight
+
+    withB = setCells emptyWorld (map (\i -> (i, getCell b i)) (Array.indices (grid b)))
+    withA = setCells withB (map (\i -> (i, getCell a i)) (Array.indices (grid a)))
