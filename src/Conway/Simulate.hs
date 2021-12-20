@@ -86,7 +86,7 @@ simulate slice world = do
   let xs = [(Partition.minX slice) .. (Partition.maxX slice)]
       ys = [(Partition.minY slice) .. (Partition.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
-      newWorld = foldr (\(vec2, alive) w -> setCell w vec2 alive) world (simulateCells xys world)
+      newWorld = setCells world (simulateCells xys world)
 
   return newWorld
 
@@ -95,16 +95,14 @@ simulateSync old = do
   new <- simulate (Partition.fromWorld old) old
   grown <- grow old
 
-  return $ union new grown
+  return $ stack new grown
 
 simulateAsync :: Int -> Int -> World -> IO World
 simulateAsync sliceWidth sliceHeight old = do
   newWorld <- foldrM simulate old slices
-  let borderGrid = Map.fromList (simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) old)
-      newGrid = Map.unionWith const borderGrid (grid newWorld)
-      newWorldWithBorder = World {width = width newWorld, height = height newWorld, grid = newGrid}
+  let partitionBorderCells = simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) old
+      newWorldWithBorder = setCells newWorld partitionBorderCells
   grown <- grow old
-  print slices
-  return $ union newWorldWithBorder grown
+  return $ stack newWorldWithBorder grown
   where
     slices = Partition.partition sliceWidth sliceHeight old

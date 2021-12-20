@@ -14,7 +14,8 @@ module Conway.World
     liveNeighbors,
     getCell,
     setCell,
-    union,
+    setCells,
+    stack,
   )
 where
 
@@ -129,11 +130,14 @@ setCell world pos cell =
       grid = Map.insert pos cell (grid world)
     }
 
--- | merge two world. If there is a conflict `a` is preferred
-union :: World -> World -> World
-union a b =
+setCells :: (Foldable m) => World -> m (Vec2, Bool) -> World
+setCells = foldr (\(pos, v) w -> setCell w pos v)
+
+-- | merge two world by layering a on top of b
+stack :: World -> World -> World
+stack a b =
   World
     { width = max (width a) (width b),
       height = max (height a) (height b),
-      grid = Map.unionWith const (grid a) (grid b)
+      grid = Map.union (grid a) (grid b)
     }
