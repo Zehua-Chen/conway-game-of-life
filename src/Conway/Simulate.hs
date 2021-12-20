@@ -8,23 +8,23 @@ import Data.Foldable
 
 -- import Debug.Trace
 
-simulateCells :: (Foldable m) => m Vec2 -> World -> [(Vec2, Bool)]
-simulateCells cells oldWorld = foldr _simulate [] cells
-  where
-    _simulate :: Vec2 -> [(Vec2, Bool)] -> [(Vec2, Bool)]
-    _simulate pos@(x, y) simulated =
-      let live = liveNeighbors oldWorld x y
-       in if getCell oldWorld pos
-            then
-              ( if live == 2 || live == 3
-                  then (pos, True) : simulated
-                  else (pos, False) : simulated
-              )
-            else
-              ( if live == 3
-                  then (pos, True) : simulated
-                  else (pos, False) : simulated
-              )
+simulateCell :: World -> Vec2 -> (Vec2, Bool)
+simulateCell world pos@(x, y) =
+  let live = liveNeighbors world x y
+   in if getCell world pos
+        then
+          ( if live == 2 || live == 3
+              then (pos, True)
+              else (pos, False)
+          )
+        else
+          ( if live == 3
+              then (pos, True)
+              else (pos, False)
+          )
+
+simulateCells :: [Vec2] -> World -> [(Vec2, Bool)]
+simulateCells cells oldWorld = map (simulateCell oldWorld) cells
 
 grow :: World -> IO World
 grow world = do
@@ -79,7 +79,7 @@ simulateSync old = do
 simulateAsync :: Int -> Int -> World -> IO World
 simulateAsync sliceWidth sliceHeight old = do
   newWorld <- foldrM simulate old slices
-  let partitionBorderCells = simulateCells (Partition.partitionBorders sliceWidth sliceHeight old) old
+  let partitionBorderCells = simulateCells (toList $ Partition.partitionBorders sliceWidth sliceHeight old) old
       newWorldWithBorder = setCells newWorld partitionBorderCells
   grown <- grow old
   return $ stack newWorldWithBorder grown
