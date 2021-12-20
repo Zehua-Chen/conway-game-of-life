@@ -16,12 +16,13 @@ test =
         ( do
             world <-
               World.fromList
-                [[True, True, False], [False, False, False], [False, False, False]]
+                [[False, False, False], [False, False, False], [False, False, False]]
 
             newWorld <- Conway.grow world
 
             assertEqual "size does not grow" 3 (World.width newWorld)
             assertEqual "size does not grow" 3 (World.height newWorld)
+            assertEqual "" 9 (length $ World.grid newWorld)
         ),
       testCase
         "grow"
@@ -37,6 +38,7 @@ test =
             assertEqual "" (Just True) (Map.lookup (0, 2) grid)
 
             assertEqual "width does not grow" 3 (World.width newWorld)
-            assertEqual "height does grow" 4 (World.height newWorld)
+            assertEqual "height does grow" 5 (World.height newWorld)
+            assertEqual "" 15 (length grid)
         )
     ]

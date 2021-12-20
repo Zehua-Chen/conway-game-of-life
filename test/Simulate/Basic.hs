@@ -23,6 +23,7 @@ test =
 
             let newGrid = World.grid newWorld
 
+            assertEqual "" 9 (length $ World.grid world)
             assertEqual "two live cells" 2 (World.liveCount newWorld)
             assertEqual "two live cells" (Just True) (Map.lookup (0, 0) newGrid)
             assertEqual "two live cells" (Just True) (Map.lookup (0, 1) newGrid)
@@ -38,6 +39,7 @@ test =
 
             let newGrid = World.grid newWorld
 
+            assertEqual "" 9 (length $ World.grid world)
             assertEqual "center cell dies" (Just False) (Map.lookup (0, 0) newGrid)
         )
     ]

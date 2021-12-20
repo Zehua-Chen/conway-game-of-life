@@ -32,7 +32,10 @@ grow :: World -> IO World
 grow world = do
   Conway.World.guard world
 
-  let xs = [(minX $ width world - 1) .. (maxX $ width world + 1)]
+  -- four corners of the expanded grid does not need to be simulated,
+  -- as they will never have 3 live neighbors in order to be alive
+
+  let xs = [(minX $ width world) .. (maxX $ width world)]
       ys = [(minY $ height world) .. (maxY $ height world)]
       top = map (,maxY $ height world + 1) xs
       bottom = map (,minY $ height world - 1) xs
@@ -52,14 +55,36 @@ grow world = do
           (\cell count -> if cell then count + 1 else count)
           (0 :: Int)
           growGridLR
-      newGrid = Map.union (grid world) (Map.union growGridTB growGridLR)
+      newGrid =
+        Map.union
+          (grid world)
+          ( Map.union
+              (if growSizeTB > 0 then growGridTB else Map.empty)
+              (if growSizeLR > 0 then growGridLR else Map.empty)
+          )
 
-  return
-    World
-      { width = if growSizeLR > 0 then width world + 1 else width world,
-        height = if growSizeTB > 0 then height world + 1 else height world,
-        grid = newGrid
-      }
+  return $
+    fillMissingCells
+      World
+        { width = if growSizeLR > 0 then width world + 2 else width world,
+          height = if growSizeTB > 0 then height world + 2 else height world,
+          grid = newGrid
+        }
+  where
+    fillMissingCells :: World -> World
+    fillMissingCells broken =
+      let xs = [(minX $ width broken) .. (maxX $ width broken)]
+          ys = [(minY $ height broken) .. (maxY $ height broken)]
+          xys = concatMap (\x -> map (x,) ys) xs
+          newGrid =
+            foldr
+              ( \xy w -> case Map.lookup xy w of
+                  Just _ -> w
+                  Nothing -> Map.insert xy False w
+              )
+              (grid broken)
+              xys
+       in World {width = width broken, height = height broken, grid = newGrid}
 
 simulate :: Partition.Slice -> World -> IO World
 simulate slice world = do
