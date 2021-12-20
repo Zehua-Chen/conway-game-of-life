@@ -20,5 +20,14 @@ test =
             assertEqual "width" 3 (World.height world)
 
             assertEqual "live count" 8 (World.liveCount world)
+        ),
+      testCase
+        "minX, maxX, minY, maxY"
+        ( do
+            assertEqual "" (-2) (World.minX 5)
+            assertEqual "" 2 (World.maxX 5)
+
+            assertEqual "" (-2) (World.minY 5)
+            assertEqual "" 2 (World.maxY 5)
         )
     ]

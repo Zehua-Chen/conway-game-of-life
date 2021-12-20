@@ -1,4 +1,4 @@
-module Partition (Partition.test) where
+module Partition.Partition (Partition.Partition.test) where
 
 import qualified Conway.Partition as Partition
 import qualified Conway.World as World
@@ -26,6 +26,14 @@ test =
                 slices = Partition.partition 3 1 world
 
             assertEqual "" 3 (length slices)
+        ),
+      testCase
+        "partition/dividable-2"
+        ( do
+            let world = World.World {World.width = 9, World.height = 9, World.grid = Map.empty}
+                slices = Partition.partition 3 3 world
+
+            assertEqual "" 9 (length slices)
         ),
       testCase
         "partition/not-dividable-0"
