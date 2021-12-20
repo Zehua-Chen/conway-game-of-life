@@ -20,6 +20,7 @@ module Conway.World
 where
 
 import qualified Control.Monad as Monad
+import qualified Conway.Slice as Slice
 import Data.Array ((!), (//))
 import qualified Data.Array as Array
 
@@ -111,20 +112,22 @@ maxY world = maxYFromH (height world)
 liveCount :: World -> Int
 liveCount world = foldr (\cell count -> if cell then count + 1 else count) (0 :: Int) (grid world)
 
-neighbors :: Int -> Int -> [Vec2]
-neighbors x y =
-  [ (x + 1, y),
-    (x - 1, y),
-    (x, y + 1),
-    (x, y - 1),
-    (x + 1, y + 1),
-    (x + 1, y - 1),
-    (x - 1, y + 1),
-    (x - 1, y - 1)
-  ]
+neighbors :: Slice.Slice -> Int -> Int -> [Vec2]
+neighbors slice x y = filter (Slice.contains slice) raw
+  where
+    raw =
+      [ (x + 1, y),
+        (x - 1, y),
+        (x, y + 1),
+        (x, y - 1),
+        (x + 1, y + 1),
+        (x + 1, y - 1),
+        (x - 1, y + 1),
+        (x - 1, y - 1)
+      ]
 
-liveNeighbors :: World -> Int -> Int -> Int
-liveNeighbors world x y =
+liveNeighbors :: Slice.Slice -> World -> Int -> Int -> Int
+liveNeighbors slice world x y =
   foldr
     ( \neighbor count ->
         if getCell world neighbor
@@ -132,7 +135,7 @@ liveNeighbors world x y =
           else count
     )
     0
-    (neighbors x y)
+    (neighbors slice x y)
 
 getCell :: World -> Vec2 -> Bool
 getCell world pos@(x, y) =

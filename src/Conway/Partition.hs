@@ -1,22 +1,16 @@
 {-# LANGUAGE TupleSections #-}
 
 module Conway.Partition
-  ( Slice,
-    minX,
-    maxX,
-    minY,
-    maxY,
+  ( Slice (Slice, minX, maxX, minY, maxY),
     partition,
     partitionBorders,
     fromWorld,
   )
 where
 
+import Conway.Slice
 import qualified Conway.World as World
 import qualified Data.HashSet as Set
-
-data Slice = Slice {minX :: Int, maxX :: Int, minY :: Int, maxY :: Int}
-  deriving (Show, Eq)
 
 partition :: Int -> Int -> World.World -> [Slice]
 partition sliceWidth sliceHeight world =

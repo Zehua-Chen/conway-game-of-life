@@ -27,6 +27,7 @@ library
   exposed-modules:
       Conway.Partition
       Conway.Simulate
+      Conway.Slice
       Conway.World
   other-modules:
       Paths_conway

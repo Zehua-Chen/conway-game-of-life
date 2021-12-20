@@ -4,14 +4,15 @@ module Conway.Simulate (simulate, grow, simulateSync, simulateAsync) where
 
 import Control.Parallel.Strategies
 import qualified Conway.Partition as Partition
+import qualified Conway.Slice as Slice
 import Conway.World
 import Data.Foldable
 
 -- import Debug.Trace
 
-simulateCell :: World -> Vec2 -> (Vec2, Bool)
-simulateCell world pos@(x, y) =
-  let live = liveNeighbors world x y
+simulateCell :: Slice.Slice -> World -> Vec2 -> (Vec2, Bool)
+simulateCell slice world pos@(x, y) =
+  let live = liveNeighbors slice world x y
    in if getCell world pos
         then
           ( if live == 2 || live == 3
@@ -24,8 +25,8 @@ simulateCell world pos@(x, y) =
               else (pos, False)
           )
 
-simulateCells :: [Vec2] -> World -> [(Vec2, Bool)]
-simulateCells cells oldWorld = map (simulateCell oldWorld) cells
+simulateCells :: [Vec2] -> Slice.Slice -> World -> [(Vec2, Bool)]
+simulateCells cells slice oldWorld = map (simulateCell slice oldWorld) cells
 
 grow :: World -> Eval World
 grow world = do
@@ -40,8 +41,9 @@ grow world = do
       right = map (maxX world + 1,) ys
       cellsTB = top ++ bottom
       cellsLR = left ++ right
-      growCellsTB = simulateCells cellsTB world
-      growCellsLR = simulateCells cellsLR world
+      growSlice = Slice.Slice {Slice.minX = minX world - 1, Slice.maxX = maxX world + 1, Slice.minY = minY world - 1, Slice.maxY = maxY world + 1}
+      growCellsTB = simulateCells cellsTB growSlice world
+      growCellsLR = simulateCells cellsLR growSlice world
       growSize :: (Vec2, Bool) -> Int -> Int
       growSize (_, live) count = if live then count + 1 else count
       growSizeTB = foldr growSize 0 growCellsTB
@@ -57,12 +59,12 @@ grow world = do
         (if growSizeTB > 0 then growCellsTB else [])
     )
 
-simulate :: Partition.Slice -> World -> Eval World
+simulate :: Slice.Slice -> World -> Eval World
 simulate slice world = do
-  let xs = [(Partition.minX slice) .. (Partition.maxX slice)]
-      ys = [(Partition.minY slice) .. (Partition.maxY slice)]
+  let xs = [(Slice.minX slice) .. (Slice.maxX slice)]
+      ys = [(Slice.minY slice) .. (Slice.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
-      newWorld = setCells world (simulateCells xys world)
+      newWorld = setCells world (simulateCells xys slice world)
 
   return newWorld
 
@@ -78,7 +80,11 @@ simulateAsync :: Int -> Int -> World -> IO World
 simulateAsync sliceWidth sliceHeight old = return $
   runEval $ do
     newWorld <- foldrM simulate old slices
-    let partitionBorderCells = simulateCells (toList $ Partition.partitionBorders sliceWidth sliceHeight old) old
+    let partitionBorderCells =
+          simulateCells
+            (toList $ Partition.partitionBorders sliceWidth sliceHeight old)
+            (Partition.fromWorld old)
+            old
         newWorldWithBorder = setCells newWorld partitionBorderCells
     grown <- grow old
     return $ stack newWorldWithBorder grown
