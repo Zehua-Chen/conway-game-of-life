@@ -19,6 +19,7 @@ module Conway.World
   )
 where
 
+import Control.DeepSeq
 import qualified Control.Monad as Monad
 import qualified Conway.Slice as Slice
 import Data.Array ((!), (//))
@@ -43,6 +44,9 @@ instance Show World where
               ++ "\n"
         )
         (reverse [minY world .. maxY world])
+
+instance NFData World where
+  rnf world = rnf (width world) `seq` rnf (height world) `seq` rnf (grid world)
 
 -- | Make sure a world has odd height and odd width
 guard :: World -> IO ()
