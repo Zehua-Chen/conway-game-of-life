@@ -149,8 +149,13 @@ setCell world pos cell =
       grid = grid world // [(pos, cell)]
     }
 
-setCells :: (Foldable m) => World -> m (Vec2, Bool) -> World
-setCells = foldr (\(pos, v) w -> setCell w pos v)
+setCells :: World -> [(Vec2, Bool)] -> World
+setCells world cells =
+  World
+    { width = width world,
+      height = height world,
+      grid = grid world // cells
+    }
 
 -- | merge two world by layering a on top of b
 stack :: World -> World -> World
