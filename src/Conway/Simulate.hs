@@ -78,7 +78,7 @@ simulateAsync sliceWidth sliceHeight old =
   runEval $ do
     grown <- rpar (grow old)
 
-    let patchResults = concat (parMap rdeepseq (`simulate` old) slices)
+    let patchResults = concat (parMap rpar (`simulate` old) slices)
         newWorld = setCells old patchResults
         partitionBorderCells =
           simulateCells
@@ -86,7 +86,7 @@ simulateAsync sliceWidth sliceHeight old =
             (Partition.fromWorld old)
             old
         newWorldWithBorder = setCells newWorld partitionBorderCells
-
-    return $ stack newWorldWithBorder (grown)
+    _ <- rseq grown
+    return $ stack newWorldWithBorder grown
   where
     slices = Partition.partition sliceWidth sliceHeight old
