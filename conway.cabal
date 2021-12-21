@@ -54,6 +54,7 @@ executable conway-exe
   build-depends:
       base >=4.7 && <5
     , conway
+    , criterion
   default-language: Haskell2010
 
 test-suite conway-test

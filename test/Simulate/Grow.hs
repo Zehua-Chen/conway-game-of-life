@@ -13,9 +13,7 @@ test =
     [ testCase
         "simulate/grow/not-grow"
         ( do
-            world <-
-              World.fromList
-                [[False, False, False], [False, False, False], [False, False, False]]
+            let world = World.fromList [[False, False, False], [False, False, False], [False, False, False]]
 
             let newWorld = Conway.grow world
 
@@ -26,9 +24,7 @@ test =
       testCase
         "simulate/grow/grow-height"
         ( do
-            world <-
-              World.fromList
-                [[True, True, True], [False, False, False], [False, False, False]]
+            let world = World.fromList [[True, True, True], [False, False, False], [False, False, False]]
 
             let newWorld = Conway.grow world
 
@@ -45,9 +41,7 @@ test =
       testCase
         "simulate/grow/grow-width"
         ( do
-            world <-
-              World.fromList
-                [[True, False, False], [True, False, False], [True, False, False]]
+            let world = World.fromList [[True, False, False], [True, False, False], [True, False, False]]
 
             let newWorld = Conway.grow world
 

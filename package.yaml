@@ -45,6 +45,7 @@ executables:
       - -eventlog
     dependencies:
       - conway
+      - criterion
 
 tests:
   conway-test:

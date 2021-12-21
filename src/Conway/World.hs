@@ -67,13 +67,8 @@ fromWH w h =
     xys = concatMap (\x -> map (\y -> ((x, y), False)) ys) xs
 
 -- | Convert a 2D bool list into a World
-fromList :: [[Bool]] -> IO World
-fromList rows =
-  do
-    Monad.guard $ odd h
-    Monad.guard $ odd w
-
-    return $ forEachRow rows emptyWorld (maxYFromH h)
+fromList :: [[Bool]] -> World
+fromList rows = forEachRow rows emptyWorld (maxYFromH h)
   where
     forEachRow :: [[Bool]] -> World -> Int -> World
     forEachRow [] world _ = world

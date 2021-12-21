@@ -13,12 +13,12 @@ test =
     [ testCase
         "simulate/infinite/3x3-not-growing"
         ( do
-            world <-
-              World.fromList
-                [ [True, True, False],
-                  [False, True, False],
-                  [False, True, False]
-                ]
+            let world =
+                  World.fromList
+                    [ [True, True, False],
+                      [False, True, False],
+                      [False, True, False]
+                    ]
 
             let syncWorld = Conway.simulateSync world
             let asyncWorld = Conway.simulateAsync 1 1 world
@@ -33,12 +33,12 @@ test =
       testCase
         "simulate/infinite/3x3-growing"
         ( do
-            world <-
-              World.fromList
-                [ [True, True, True],
-                  [False, True, False],
-                  [False, True, False]
-                ]
+            let world =
+                  World.fromList
+                    [ [True, True, True],
+                      [False, True, False],
+                      [False, True, False]
+                    ]
 
             let syncWorld = Conway.simulateSync world
             let asyncWorld = Conway.simulateAsync 1 1 world
@@ -53,14 +53,14 @@ test =
       testCase
         "simulate/infinite/5x5"
         ( do
-            world <-
-              World.fromList
-                [ [True, True, False, True, True],
-                  [False, True, False, False, False],
-                  [False, True, False, True, False],
-                  [True, True, False, True, True],
-                  [False, True, False, False, False]
-                ]
+            let world =
+                  World.fromList
+                    [ [True, True, False, True, True],
+                      [False, True, False, False, False],
+                      [False, True, False, True, False],
+                      [True, True, False, True, True],
+                      [False, True, False, False, False]
+                    ]
 
             -- print world
 
@@ -84,18 +84,18 @@ test =
       testCase
         "simulate/infinite/9x9"
         ( do
-            world <-
-              World.fromList
-                [ [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True],
-                  [True, True, False, True, False, True, False, True, True]
-                ]
+            let world =
+                  World.fromList
+                    [ [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True],
+                      [True, True, False, True, False, True, False, True, True]
+                    ]
 
             let syncWorld = Conway.simulateSync world
             let asyncWorld = Conway.simulateAsync 3 3 world

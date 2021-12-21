@@ -14,9 +14,7 @@ test =
     [ testCase
         "simulate/finite/0"
         ( do
-            world <-
-              World.fromList
-                [[True, False, False], [False, True, True], [False, False, False]]
+            let world = World.fromList [[True, False, False], [False, True, True], [False, False, False]]
 
             let newWorld = World.setCells world (Simulate.simulate (Partition.fromWorld world) world)
                 newGrid = World.grid newWorld
@@ -29,9 +27,7 @@ test =
       testCase
         "simulate/finite/1"
         ( do
-            world <-
-              World.fromList
-                [[True, True, True], [True, True, True], [True, True, True]]
+            let world = World.fromList [[True, True, True], [True, True, True], [True, True, True]]
 
             let newWorld = World.setCells world (Simulate.simulate (Partition.fromWorld world) world)
 

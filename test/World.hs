@@ -12,9 +12,7 @@ test =
     [ testCase
         "world/fromList"
         ( do
-            world <-
-              World.fromList
-                [[True, True, True], [True, False, True], [True, True, True]]
+            let world = World.fromList [[True, True, True], [True, False, True], [True, True, True]]
 
             assertEqual "width" 3 (World.width world)
             assertEqual "width" 3 (World.height world)
@@ -44,8 +42,8 @@ test =
       testCase
         "world/stack"
         ( do
-            a <- World.fromList [[False]]
-            b <- World.fromList [[True, True, True]]
+            let a = World.fromList [[False]]
+            let b = World.fromList [[True, True, True]]
 
             let result = a `World.stack` b
 
