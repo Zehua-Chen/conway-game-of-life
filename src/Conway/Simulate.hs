@@ -28,7 +28,7 @@ simulateCell slice world pos@(x, y) =
           )
 
 simulateCells :: Slice.Slice -> World -> [Vec2] -> [SimulateResult]
-simulateCells slice oldWorld cells = map (simulateCell slice oldWorld) cells
+simulateCells slice oldWorld = map (simulateCell slice oldWorld)
 
 grow :: World -> World
 grow world = do
