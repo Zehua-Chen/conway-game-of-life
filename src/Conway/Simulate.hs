@@ -74,19 +74,33 @@ simulateSync old =
     return $ stack new grown
 
 simulateAsync :: Int -> Int -> Int -> World -> World
-simulateAsync sliceWidth sliceHeight chunkSize old = stack newWorldWithBorder grown
+simulateAsync sliceWidth sliceHeight chunkSize old = runEval $ do
+  let slices = Partition.partition sliceWidth sliceHeight old
+      partitionBorders = toList $ Partition.partitionBorders sliceWidth sliceHeight old
+
+  (slices', partitionBorders') <- parTuple2 rdeepseq rdeepseq (slices, partitionBorders)
+
+  let grown = grow old
+      sliceCells = map (`simulate` old) slices'
+      partitionBorderCells =
+        simulateCells
+          (Partition.fromWorld old)
+          old
+          partitionBorders'
+
+  (grown', partitionBorderCells', sliceCells') <-
+    parTuple3
+      rdeepseq
+      partitionBorderCellsStrategy
+      sliceCellsStrategy
+      (grown, partitionBorderCells, sliceCells)
+
+  let sliceCellWorld = setCells old (concat sliceCells')
+
+  return $ stack (setCells sliceCellWorld partitionBorderCells') grown'
   where
-    slices = Partition.partition sliceWidth sliceHeight old
-    partitionBorders = toList $ Partition.partitionBorders sliceWidth sliceHeight old
+    sliceCellsStrategy :: Strategy [[SimulateResult]]
+    sliceCellsStrategy = parList rdeepseq
 
-    partitionBorderCells =
-      simulateCells
-        (Partition.fromWorld old)
-        old
-        partitionBorders
-
-    partitionBorderCells' = partitionBorderCells `using` parListChunk chunkSize rdeepseq
-
-    grown = grow old `using` rpar
-    newWorld = foldr (flip setCells) old (parMap rdeepseq (`simulate` old) slices)
-    newWorldWithBorder = setCells newWorld partitionBorderCells'
+    partitionBorderCellsStrategy :: Strategy [SimulateResult]
+    partitionBorderCellsStrategy = parListChunk chunkSize rdeepseq
