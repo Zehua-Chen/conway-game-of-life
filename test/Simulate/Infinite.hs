@@ -21,7 +21,7 @@ test =
                     ]
 
             let syncWorld = Conway.simulateSync world
-            let asyncWorld = Conway.simulateAsync 1 1 world
+            let asyncWorld = Conway.simulateAsync 1 1 1 world
 
             assertEqual "width" 3 (World.width syncWorld)
             assertEqual "height" 3 (World.height syncWorld)
@@ -41,7 +41,7 @@ test =
                     ]
 
             let syncWorld = Conway.simulateSync world
-            let asyncWorld = Conway.simulateAsync 1 1 world
+            let asyncWorld = Conway.simulateAsync 1 1 1 world
 
             assertEqual "width" 3 (World.width syncWorld)
             assertEqual "height" 5 (World.height syncWorld)
@@ -65,7 +65,7 @@ test =
             -- print world
 
             let syncWorld = Conway.simulateSync world
-            let asyncWorld = Conway.simulateAsync 3 3 world
+            let asyncWorld = Conway.simulateAsync 3 3 1 world
 
             -- print syncWorld
             -- print (World.grid asyncWorld)
@@ -98,7 +98,7 @@ test =
                     ]
 
             let syncWorld = Conway.simulateSync world
-            let asyncWorld = Conway.simulateAsync 3 3 world
+            let asyncWorld = Conway.simulateAsync 3 3 1 world
 
             assertEqual "" (length $ World.grid syncWorld) (length $ World.grid asyncWorld)
             assertEqual "" syncWorld asyncWorld

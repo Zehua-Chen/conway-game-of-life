@@ -31,6 +31,7 @@ library:
     - deepseq
   ghc-options:
     - -Wall
+    - -O2
 
 executables:
   conway-exe:

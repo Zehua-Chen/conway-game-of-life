@@ -27,8 +27,8 @@ simulateCell slice world pos@(x, y) =
               else (pos, False)
           )
 
-simulateCells :: [Vec2] -> Slice.Slice -> World -> [SimulateResult]
-simulateCells cells slice oldWorld = map (simulateCell slice oldWorld) cells
+simulateCells :: Slice.Slice -> World -> [Vec2] -> [SimulateResult]
+simulateCells slice oldWorld cells = map (simulateCell slice oldWorld) cells
 
 grow :: World -> World
 grow world = do
@@ -44,8 +44,8 @@ grow world = do
       cellsTB = top ++ bottom
       cellsLR = left ++ right
       growSlice = Slice.Slice {Slice.minX = minX world - 1, Slice.maxX = maxX world + 1, Slice.minY = minY world - 1, Slice.maxY = maxY world + 1}
-      growCellsTB = simulateCells cellsTB growSlice world
-      growCellsLR = simulateCells cellsLR growSlice world
+      growCellsTB = simulateCells growSlice world cellsTB
+      growCellsLR = simulateCells growSlice world cellsLR
       growSize :: (Vec2, Bool) -> Int -> Int
       growSize (_, live) count = if live then count + 1 else count
       growSizeTB = foldr growSize 0 growCellsTB
@@ -63,7 +63,7 @@ simulate slice world = do
   let xs = [(Slice.minX slice) .. (Slice.maxX slice)]
       ys = [(Slice.minY slice) .. (Slice.maxY slice)]
       xys = concatMap (\x -> map (x,) ys) xs
-   in simulateCells xys slice world
+   in simulateCells slice world xys
 
 simulateSync :: World -> World
 simulateSync old =
@@ -73,20 +73,20 @@ simulateSync old =
 
     return $ stack new grown
 
-simulateAsync :: Int -> Int -> World -> World
-simulateAsync sliceWidth sliceHeight old =
-  runEval $ do
-    grown <- rpar (grow old)
-
-    let newWorld = foldr (flip setCells) old (parMap rdeepseq (`simulate` old) slices)
-        partitionBorderCells =
-          simulateCells
-            (toList $ Partition.partitionBorders sliceWidth sliceHeight old)
-            (Partition.fromWorld old)
-            old
-        newWorldWithBorder = setCells newWorld partitionBorderCells
-    _ <- rdeepseq grown
-    _ <- rdeepseq newWorldWithBorder
-    return $ stack newWorldWithBorder grown
+simulateAsync :: Int -> Int -> Int -> World -> World
+simulateAsync sliceWidth sliceHeight chunkSize old = stack newWorldWithBorder grown
   where
     slices = Partition.partition sliceWidth sliceHeight old
+    partitionBorders = toList $ Partition.partitionBorders sliceWidth sliceHeight old
+
+    partitionBorderCells =
+      simulateCells
+        (Partition.fromWorld old)
+        old
+        partitionBorders
+
+    partitionBorderCells' = partitionBorderCells `using` parListChunk chunkSize rdeepseq
+
+    grown = grow old `using` rpar
+    newWorld = foldr (flip setCells) old (parMap rdeepseq (`simulate` old) slices)
+    newWorldWithBorder = setCells newWorld partitionBorderCells'

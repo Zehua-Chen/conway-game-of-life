@@ -14,5 +14,5 @@ main =
       bench "sync" sync
     ]
   where
-    async = nf (simulateAsync 40 40) bigWorld
+    async = nf (simulateAsync 40 40 20) bigWorld
     sync = nf simulateSync bigWorld
