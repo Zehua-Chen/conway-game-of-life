@@ -123,6 +123,33 @@
         on an infinite grid.
       \end{enumerate}
 
+    \subsection{Command Line Interface}
+
+      \subsubsection{Simulation}
+
+        In order to run simulation, pass the following to the command line application
+
+        \begin{lstlisting}
+conway-exe <file> <iterations> <slice width> <slice height> <chunk size>
+        \end{lstlisting}
+
+        \say{file} is a json file containing the description of the world. The
+        file should look like the following.
+
+        \lstinputlisting{../sample-input.json}
+
+        After the simulation has finished, the program will save two
+        images \code{sync.ppm} and \code{async.ppm}, one produced by
+        single core simulation, and the other produced by multi core simulation.
+
+      \subsubsection{Benchmarking}
+
+        In order to benchmark, give the following to the command line application
+
+        \begin{lstlisting}
+conway-exe benchmark
+        \end{lstlisting}
+
   \section{Performance}
 
     My machine has the following specs
@@ -236,6 +263,11 @@
       \end{itemize}
 
   \section{Code}
+
+    \subsection{Command Line Application}
+
+      \lstinputlisting[caption=\code{Main.hs}]{../app/Main.hs}
+      \lstinputlisting[caption=\code{Benchmark.hs}]{../app/Benchmark.hs}
 
     \subsection{Implementation}
 
