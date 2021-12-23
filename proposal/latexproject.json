@@ -1,8 +1,7 @@
 {
   "latex": "pdflatex",
   "bin": "bin",
-  "entry": "zc2616.tex",
+  "entry": "proposal.tex",
   "bib": "none",
-  "glossary": false,
-  "includes": ["../engine/Schema.hs"]
+  "glossary": false
 }

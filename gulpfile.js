@@ -1,5 +1,6 @@
 import gulp from "gulp";
 import path from "path";
+import gulpZip from "gulp-zip";
 import fs from "fs";
 
 export function clean(cb) {
@@ -13,6 +14,12 @@ export function clean(cb) {
 export function distReport() {
   return gulp
     .src(path.join("report", "bin", "report.pdf"))
+    .pipe(gulp.dest("dist"));
+}
+
+export function distProposal() {
+  return gulp
+    .src(path.join("proposal", "bin", "proposal.pdf"))
     .pipe(gulp.dest("dist"));
 }
 
@@ -39,10 +46,11 @@ export function distHaskell() {
       ],
       { base: "." }
     )
+    .pipe(gulpZip("source.zip"))
     .pipe(gulp.dest("dist"));
 }
 
-export const zip = gulp.series(
+export const dist = gulp.series(
   clean,
-  gulp.parallel(distReport, distSlides, distHaskell)
+  gulp.parallel(distReport, distProposal, distSlides, distHaskell)
 );

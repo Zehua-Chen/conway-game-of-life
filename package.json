@@ -5,9 +5,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "zip": "gulp zip"
+    "dist": "gulp dist"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.1.0"
   }
 }
