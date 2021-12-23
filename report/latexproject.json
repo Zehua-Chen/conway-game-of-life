@@ -1,0 +1,8 @@
+{
+  "latex": "pdflatex",
+  "bin": "bin",
+  "entry": "index.tex",
+  "bib": "none",
+  "glossary": false,
+  "includes": []
+}
