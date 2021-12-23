@@ -29,6 +29,7 @@ library:
     - array
     - parallel
     - deepseq
+    - aeson
   ghc-options:
     - -Wall
     - -O2
