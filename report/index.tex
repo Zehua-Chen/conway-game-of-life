@@ -1,8 +1,16 @@
 \documentclass{article}
+\usepackage{inconsolata}
+\usepackage{dirtytalk}
+\usepackage{tikz}
+\usepackage{float}
+
+\usetikzlibrary{automata}
 
 \title{COMS 4995 Final Project}
 \author{Zehua Chen (zc2616)}
 \date{\today}
+
+\newcommand{\code}[1]{{\ttfamily #1}}
 
 \begin{document}
   \maketitle
@@ -12,6 +20,79 @@
   \setlength{\parindent}{0px}
 
   \section{Implementation}
+
+    \subsection{Coordinate System}
+
+      The world has a height and a width. The origin (0, 0) is located at the
+      center of the world. If we save the world as an image, positive
+      axis would be on the right of the image and positive y axis
+      would be on the top of the image.
+
+      In order for a cell to exist at (0, 0) and the world be modeled using
+      width and height, width and height must be odd numbers
+
+    \subsection{Single Core}
+
+      Single core implementation (\code{Conway.Simulate.simulateSync})
+      of the simulation:
+
+      \begin{enumerate}
+        \item Simulate the world
+        \item Simulate one layer outside of the existing world, and expand
+        the existing world if needed
+      \end{enumerate}
+
+    \subsection{Multi Core}
+
+      Multicore implementation (\code{Conway.Simulate.simulateAsync})
+      of the simulation
+
+      \begin{enumerate}
+        \item \label{multi: step-partition}
+        Divide the world into partitions and calculate adjacent cells
+        between partitions
+        \item \label{multi: step-simulate}
+        Simulate the partitions, with access only to the world within the
+        partition
+        \item \label{multi: step-simulate-border}
+        Simulate the adjacent cells between partitions, with access to the
+        whole world
+        \item \label{multi: step-grow}
+        Simulate one layer outside of the existing world
+        \item Combine the result of \ref{multi: step-simulate},
+        \ref{multi: step-simulate-border} and \ref{multi: step-grow}
+      \end{enumerate}
+
+      Of the above steps, the operations are \ref{multi: step-partition}
+      is performed in parallel first. After they finish, the operations in
+      \ref{multi: step-simulate}, \ref{multi: step-simulate-border},
+      \ref{multi: step-grow} are performed in parallel. The latter operations
+      are performed in a second step because they depend on the result from
+      the former operations.
+
+      \subsubsection{Parameters}
+
+        Multicore simulation allows customizations in
+
+        \begin{itemize}
+          \item slice width, slice height: how big each slice should be
+          \item chunk size: the multi core simulation uses \code{parList} in
+          some operations. Chunk size is used to customize \code{parList}
+        \end{itemize}
+
+    \subsection{Modules}
+
+      \begin{enumerate}
+        \item \code{Conway.World}: provide abstraction to the conway world,
+        and various utility functions useful for operations on the world
+        \item \code{Conway.Slice}: provide abstraction of slices of worlds
+        \item \code{Conway.Partition}: provide function that split the world
+        into slices, and find the cells on the outer layer of each partition
+        \item \code{Conway.Simulate}: implements single and multi core
+        simulation
+        \item \code{Conway.PPM}: saves a conway world into a PPM image
+      \end{enumerate}
+
   \section{Performance}
   \section{Code}
 \end{document}
