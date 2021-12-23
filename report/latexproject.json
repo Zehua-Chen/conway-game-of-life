@@ -1,7 +1,7 @@
 {
   "latex": "pdflatex",
   "bin": "bin",
-  "entry": "index.tex",
+  "entry": "report.tex",
   "bib": "none",
   "glossary": false,
   "includes": []

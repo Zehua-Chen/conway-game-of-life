@@ -7,3 +7,6 @@
 
 *.ppm
 *.eventlog
+
+node_modules/
+dist/

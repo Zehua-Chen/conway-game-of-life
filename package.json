@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "name": "report",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "zip": "gulp zip"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
