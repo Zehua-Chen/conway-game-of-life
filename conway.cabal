@@ -46,7 +46,7 @@ library
 executable conway-exe
   main-is: Main.hs
   other-modules:
-      IO
+      Benchmark
       Paths_conway
   hs-source-dirs:
       app
