@@ -1,14 +1,22 @@
 \documentclass{article}
+\usepackage[margin=1in]{geometry}
 \usepackage{inconsolata}
 \usepackage{dirtytalk}
 \usepackage{tikz}
 \usepackage{float}
+\usepackage{listings}
+\usepackage{hyperref}
 
 \usetikzlibrary{automata}
 
 \title{COMS 4995 Final Project}
 \author{Zehua Chen (zc2616)}
 \date{\today}
+
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left
+}
 
 \newcommand{\code}[1]{{\ttfamily #1}}
 
@@ -37,8 +45,8 @@
       of the simulation:
 
       \begin{enumerate}
-        \item Simulate the world
-        \item Simulate one layer outside of the existing world, and expand
+        \item \label{single: step-simulate} Simulate the world
+        \item \label{single: step-grow} Simulate one layer outside of the existing world, and expand
         the existing world if needed
       \end{enumerate}
 
@@ -53,12 +61,14 @@
         between partitions
         \item \label{multi: step-simulate}
         Simulate the partitions, with access only to the world within the
-        partition
+        partition. \emph{This step reuses code of step \ref{single: step-simulate} from
+        single core implementation}
         \item \label{multi: step-simulate-border}
         Simulate the adjacent cells between partitions, with access to the
-        whole world
+        whole world.
         \item \label{multi: step-grow}
-        Simulate one layer outside of the existing world
+        Simulate one layer outside of the existing world. \emph{This step reuses
+        code of step \ref{single: step-simulate} from single core implementation}
         \item Combine the result of \ref{multi: step-simulate},
         \ref{multi: step-simulate-border} and \ref{multi: step-grow}
       \end{enumerate}
@@ -93,6 +103,41 @@
         \item \code{Conway.PPM}: saves a conway world into a PPM image
       \end{enumerate}
 
+    \subsection{Testing}
+
+      \begin{enumerate}
+        \item \code{test/World.hs}: tests for \code{Conway.World}
+        \item \code{test/Partition/Partition.hs}: make sure the world can be
+        divided into partitions
+        \item \code{test/Partition/PartitionBorders.hs}: make sure the outer
+        most layer of a partition can be resolved property
+        \item \code{test/Simulate/Finite.hs}: make sure that simulation on
+        finite grid is correct
+        \item \code{test/Simulate/Grow.hs}: make sure that teh grid is grown
+        when needed
+        \item \code{test/Simulate/Infinite.hs}: make sure that single core
+        and multi core implementation produces the same result from simulating
+        on an infinite grid.
+      \end{enumerate}
+
   \section{Performance}
   \section{Code}
+
+    \subsection{Implementation}
+
+      \lstinputlisting[caption=\code{Conway.Partition}]{../src/Conway/Partition.hs}
+      \lstinputlisting[caption=\code{Conway.PPM}]{../src/Conway/PPM.hs}
+      \lstinputlisting[caption=\code{Conway.Simulate}]{../src/Conway/Simulate.hs}
+      \lstinputlisting[caption=\code{Conway.Slice}]{../src/Conway/Slice.hs}
+      \lstinputlisting[caption=\code{Conway.World}]{../src/Conway/World.hs}
+
+    \subsection{Testing}
+
+      \lstinputlisting[caption=\code{test/World.hs}]{../test/World.hs}
+      \lstinputlisting[caption=\code{test/Partition/Partition.hs}]{../test/Partition/Partition.hs}
+      \lstinputlisting[caption=\code{test/Partition/PartitionBorder.hs}]{../test/Partition/PartitionBorder.hs}
+      \lstinputlisting[caption=\code{test/Simulate/Finite.hs}]{../test/Simulate/Finite.hs}
+      \lstinputlisting[caption=\code{test/Simulate/Grow.hs}]{../test/Simulate/Grow.hs}
+      \lstinputlisting[caption=\code{test/Simulate/Infinite.hs}]{../test/Simulate/Infinite.hs}
+
 \end{document}
