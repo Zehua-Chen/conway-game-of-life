@@ -29,6 +29,8 @@ test =
 
             assertEqual "" 9 (length slices)
             assertValidSlices slices world
+
+            assertBool "" (Partition.Slice (-1) (-1) (-1) (-1) `elem` slices)
         ),
       testCase
         "partition/dividable-1"
@@ -47,6 +49,8 @@ test =
 
             assertEqual "" 9 (length slices)
             assertValidSlices slices world
+
+            assertBool "" (Partition.Slice (-4) (-2) (-4) (-2) `elem` slices)
         ),
       testCase
         "partition/not-dividable-0"
